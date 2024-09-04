@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".setting2">
+
+
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:fillViewport="true">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical">
+
+           <LinearLayout
+               android:layout_marginTop="50dp"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical">
+
+
+
+
+
+               <!-- open button nama toko -->
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical">
+
+                   <Button
+                       android:layout_margin="10dp"
+                       android:id="@+id/namatoko"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Ubah Nama Toko"
+                       android:textColor="@color/white"
+                       android:background="@color/black"/>
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Nama toko : "
+                           android:layout_margin="10dp"
+                           android:textColor="@color/black"
+                           android:textSize="20dp"
+                           android:id="@+id/textnamatoko1"/>
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text=""
+                           android:layout_margin="10dp"
+                           android:textColor="@color/black"
+                           android:textSize="20dp"
+                           android:id="@+id/textnamatoko2"/>
+
+                   </LinearLayout>
+
+
+               </LinearLayout>
+
+               <!-- close button nama toko -->
+
+
+
+
+
+
+
+
+               <View
+                   android:layout_marginTop="10dp"
+                   android:layout_marginBottom="10dp"
+                   android:layout_width="match_parent"
+                   android:layout_height="1dp"
+                   android:background="@color/black"/>
+
+
+
+
+
+
+
+
+
+               <!-- open button alamat toko -->
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical">
+
+                   <Button
+                       android:layout_margin="10dp"
+                       android:id="@+id/buttonalamat"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Ubah Alamat Toko"
+                       android:textColor="@color/white"
+                       android:background="@color/black"/>
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Alamat : "
+                           android:textColor="@color/black"
+                           android:textSize="20dp"
+                           android:layout_margin="10dp"/>
+
+                       <TextView
+                           android:id="@+id/teksalamat"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text=""
+                           android:textColor="@color/black"
+                           android:textSize="20dp"
+                           android:layout_margin="10dp"/>
+
+                   </LinearLayout>
+
+               </LinearLayout>
+
+               <!-- close button alamat toko -->
+
+
+
+
+
+
+
+
+               <View
+                   android:layout_marginTop="10dp"
+                   android:layout_marginBottom="10dp"
+                   android:layout_width="match_parent"
+                   android:layout_height="1dp"
+                   android:background="@color/black"/>
+
+
+
+
+
+
+               <!-- open button alamat toko -->
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical">
+
+                   <Button
+                       android:layout_margin="10dp"
+                       android:id="@+id/aktivasi"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Aktivasi aplikasi"
+                       android:textColor="@color/white"
+                       android:background="@color/black"/>
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal">
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Status : "
+                           android:textColor="@color/black"
+                           android:textSize="20dp"
+                           android:layout_margin="10dp"/>
+                       <TextView
+                           android:id="@+id/teksaktivasi"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text=""
+                           android:textColor="@color/black"
+                           android:textSize="20dp"
+                           android:layout_margin="10dp"/>
+
+                   </LinearLayout>
+
+               </LinearLayout>
+
+               <!-- close button alamat toko -->
+
+
+
+
+
+               <View
+                   android:layout_marginTop="10dp"
+                   android:layout_marginBottom="10dp"
+                   android:layout_width="match_parent"
+                   android:layout_height="1dp"
+                   android:background="@color/black"/>
+
+
+
+
+
+
+               <!-- open version
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical">
+
+                   <TextView
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_margin="10dp"
+                       android:text="version  1.0"
+                       android:textSize="15dp"
+                       android:textColor="@color/black"/>
+
+                   <TextView
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_margin="10dp"
+                       android:text="version  1.0"
+                       android:textSize="15dp"
+                       android:textColor="@color/black"/>
+
+
+               </LinearLayout>
+
+               < close version -->
+
+
+
+
+
+           </LinearLayout>
+
+
+       </LinearLayout>
+
+
+   </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
