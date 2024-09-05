@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -8,7 +9,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "Kasir.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 5
         const val TABLE_NAME = "Barang"
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "nama"
@@ -81,6 +82,36 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         cursor.close()
         return total
+    }
+
+
+
+    // Method to get Barang by barcode
+    @SuppressLint("Range")
+    fun getBarangByBarcode(barcode: String): Barang? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLE_NAME,
+            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK),
+            "idbarcode = ?",
+            arrayOf(barcode),
+            null, null, null,
+        )
+
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+            val nama = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
+            val harga = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE))
+            val barcode = cursor.getString(cursor.getColumnIndex(COLUMN_BARCODE))
+            val stok = cursor.getInt(cursor.getColumnIndex(COLUMN_STOK))
+            cursor.close()
+            db.close()
+            return Barang(id, nama, harga,barcode, stok )
+        }
+
+        cursor.close()
+        db.close()
+        return null
     }
 
 
