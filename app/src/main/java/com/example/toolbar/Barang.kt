@@ -4,5 +4,6 @@ data class Barang(
     val id: Int,
     val nama: String,
     val harga: Double,
-    val idbarcode: String
+    val idbarcode: String,
+    val stokbarang: Int
 )

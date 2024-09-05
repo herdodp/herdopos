@@ -5,23 +5,102 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <TextView
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:id="@+id/textNama"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nama Barang"
-        android:textSize="16sp" />
 
-    <TextView
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:id="@+id/textHarga"
-        android:layout_width="wrap_content"
+    <!-- open nama barang -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Harga Barang"
-        android:textSize="14sp" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:id="@+id/textNama"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama Barang"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+    <!-- close nama barang -->
+
+
+
+
+
+
+    <!-- open harga barang -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Harga: "
+            android:textSize="14sp" />
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:id="@+id/textHarga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Harga Barang"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+    <!-- close harga barang -->
+
+
+
+
+
+
+
+    <!-- open stok barang -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stok: "
+            android:textSize="14sp" />
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:id="@+id/stokbarang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stok barang"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+    <!-- close stok barang -->
+
+
+
+
+
+
+
 
     <TextView
         android:textStyle="bold"
@@ -29,28 +108,42 @@
         android:id="@+id/idbarcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="idbarcode"
+        android:text=""
         android:textSize="14sp" />
 
 <LinearLayout
+    android:layout_marginTop="20dp"
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <Button
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="10dp"
         android:id="@+id/btn_hapus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hapus" />
 
     <Button
+        android:textSize="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:id="@+id/btn_barocde"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View barcode" />
+        android:text="QRcode" />
+
+    <Button
+        android:textSize="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/editbarang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit" />
 
 </LinearLayout>
 
