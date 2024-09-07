@@ -30,6 +30,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_TANGGAL_RIWAYAT = "tanggal_riwayat"
         const val COLUMN_NO_STRUK = "nomor_struk"
 
+
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -46,10 +47,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_RIWAYAT")
         onCreate(db)
     }
 
-    // Fungsi untuk menyimpan data ke dalam database
+
+
+
+    // ============================================== OPEN DATABASE BARANG ===========================================
+
+    // Fungsi untuk menyimpan data ke dalam database barang
     fun insertData(nama: String, harga: Double, idbarcode: String, stokbarang: Int): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues()
@@ -60,7 +67,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.insert(TABLE_NAME, null, contentValues)
     }
 
-    // Fungsi untuk mengambil semua data dari database
+    // Fungsi untuk mengambil semua data dari database barang
     fun getAllData(): List<Barang> {
         val barangList = mutableListOf<Barang>()
         val db = this.readableDatabase
@@ -84,14 +91,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return barangList
     }
 
-    // untuk menghapus data
+    // untuk menghapus data di database barang
     fun deleteData(id: Int): Int {
         val db = this.writableDatabase
         return db.delete("barang", "id = ?", arrayOf(id.toString()))
     }
 
 
-    //menghitung total jumlah data dalam database
+    //menghitung total jumlah data dalam database barang
     fun getTotalJumlahBarang(): Int {
         val db = this.readableDatabase
         val query = "SELECT COUNT(*) FROM $TABLE_NAME"
@@ -106,7 +113,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
 
 
-    // Method to get Barang by barcode
+    // Method to get Barang by barcode di database barang
     @SuppressLint("Range")
     fun getBarangByBarcode(barcode: String): Barang? {
         val db = this.readableDatabase
@@ -133,6 +140,101 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return null
     }
+
+    //==============================================   CLOSE DATABASE BARANG =========================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //============================================= OPEN DATABASE RIWAYAT TRANSAKSI ===================================
+
+    //nama_barang, qty_barang, harga_asli, total_harga, jam_riwayat, tanggal_riwayat, nomor_struk
+
+    //insert data riwayat
+    fun insertDatariwayat(nama: String, harga: Double, idbarcode: String, stokbarang: Int): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(COLUMN_NAME, nama)
+        contentValues.put(COLUMN_PRICE, harga)
+        contentValues.put(COLUMN_BARCODE,idbarcode)
+        contentValues.put(COLUMN_STOK, stokbarang)
+        return db.insert(TABLE_RIWAYAT, null, contentValues)
+    }
+
+
+
+
+    // Fungsi untuk mengambil semua data dari database riwayat
+    fun getAllDatariwayat(): List<Barang> {
+        val barangList = mutableListOf<Barang>()
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TABLE_NAME"
+        val cursor = db.rawQuery(query, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
+                val nama = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+                val harga = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE))
+                val idbarcode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BARCODE))
+                val stok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STOK))
+
+
+                val barang = Barang(id, nama, harga, idbarcode, stok)
+                barangList.add(barang)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return barangList
+    }
+
+
+
+
+    // Method to get Barang by barcode di database struk
+    @SuppressLint("Range")
+    fun getBarangBykodestruk(barcode: String): Barang? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLE_NAME,
+            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK),
+            "idbarcode = ?",
+            arrayOf(barcode),
+            null, null, null,
+        )
+
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+            val nama = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
+            val harga = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE))
+            val barcode = cursor.getString(cursor.getColumnIndex(COLUMN_BARCODE))
+            val stok = cursor.getInt(cursor.getColumnIndex(COLUMN_STOK))
+            cursor.close()
+            db.close()
+            return Barang(id, nama, harga,barcode, stok )
+        }
+
+        cursor.close()
+        db.close()
+        return null
+    }
+
+
+
+    //============================================= CLOSE DATABASE RIWAYAT TRANSAKSI ===================================
+
+
+
+
 
 
 
