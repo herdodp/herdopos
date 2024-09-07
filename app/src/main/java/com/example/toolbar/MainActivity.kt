@@ -1,6 +1,9 @@
 package com.example.toolbar
 
 import com.example.toolbar.ScanResult
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import DatabaseHelper
 import ScanResultAdapter
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
@@ -99,7 +102,31 @@ class MainActivity : AppCompatActivity() {
             builder.setTitle("Complete Transaction")
             builder.setMessage("Selesaikan Transaksi ini ?")
             builder.setPositiveButton("Selesaikan"){_,_ ->
-                selesaikanTransaksi()
+                Toast.makeText(applicationContext, "Transaksi selesai", Toast.LENGTH_SHORT).show()
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("Print struk transaksi ini ?")
+                builder.setPositiveButton("Print"){_,_->
+
+                        lifecycleScope.launch {
+                            Toast.makeText(applicationContext, "Process print struk.", Toast.LENGTH_SHORT).show()
+                            delay(1000) // Delay selama 2 detik
+                            Toast.makeText(applicationContext, "Process print struk. .", Toast.LENGTH_SHORT).show()
+                            delay(1000)
+                            Toast.makeText(applicationContext, "Process print struk. . .", Toast.LENGTH_SHORT).show()
+                            delay(2000)
+
+                            selesaikanTransaksi()
+
+                        }
+
+
+                }
+                builder.setNegativeButton("Cancel"){dialog,_->
+                    startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                }
+                builder.create()
+                builder.show()
+
             }
             builder.setNegativeButton("Batal"){dialog, _->
                 dialog.dismiss()
@@ -551,7 +578,14 @@ class MainActivity : AppCompatActivity() {
                     socket.close()
 
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, "Struk berhasil dicetak!", Toast.LENGTH_SHORT).show()
+
+                        lifecycleScope.launch {
+                            Toast.makeText(applicationContext, "Struk berhasil dicetak!", Toast.LENGTH_SHORT).show()
+                            delay(2000) // Delay selama 2 detik
+                            startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                            Toast.makeText(applicationContext, "Pilih perangkat bluetooth dulu sebelum menyelesaikan transaksi", Toast.LENGTH_SHORT).show()
+                            delay(1000)
+                        }
                     }
 
                 } catch (e: IOException) {

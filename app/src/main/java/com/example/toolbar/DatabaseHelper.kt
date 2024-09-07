@@ -10,19 +10,39 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     companion object {
         private const val DATABASE_NAME = "Kasir.db"
         private const val DATABASE_VERSION = 5
+
+        //table barang
         const val TABLE_NAME = "Barang"
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "nama"
         const val COLUMN_PRICE = "harga"
         const val COLUMN_BARCODE = "idbarcode"
         const val COLUMN_STOK = "stok"
+
+        //table riwayat transaksi
+        const val TABLE_RIWAYAT = "riwayat"
+        const val COLUMN_ID_RIWAYAT = "id_riwayat"
+        const val COLUMN_NAMA_BARANG = "nama_barang"
+        const val COLUMN_QTY_BARANG = "qty_barang"
+        const val COLUMN_HARGA_ASLI = "harga_asli"
+        const val COLUMN_TOTAL_HARGA = "total_harga"
+        const val COLUMN_JAM_RIWAYAT = "jam_riwayat"
+        const val COLUMN_TANGGAL_RIWAYAT = "tanggal_riwayat"
+        const val COLUMN_NO_STRUK = "nomor_struk"
+
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable = ("CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "$COLUMN_NAME TEXT, $COLUMN_PRICE REAL, $COLUMN_BARCODE TEXT, $COLUMN_STOK INTEGER)")
         db?.execSQL(createTable)
+
+        val createTableriwayat = ("CREATE TABLE $TABLE_RIWAYAT ($COLUMN_ID_RIWAYAT INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_NAMA_BARANG TEXT, $COLUMN_QTY_BARANG INTEGER, $COLUMN_HARGA_ASLI REAL, $COLUMN_TOTAL_HARGA REAL, $COLUMN_JAM_RIWAYAT TEXT, $COLUMN_TANGGAL_RIWAYAT TEXT, $COLUMN_NO_STRUK TEXT)")
+        db?.execSQL(createTableriwayat)
+
     }
+
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
