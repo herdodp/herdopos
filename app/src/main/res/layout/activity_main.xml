@@ -1,115 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
-    <!-- Toolbar -->
+    <!-- open Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="@color/white" />
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <!-- close toolbar -->
 
-    <!-- Total Pemasukkan -->
+    <!-- open total Pemasukkan -->
     <LinearLayout
-        android:layout_margin="10dp"
-        android:layout_width="match_parent"
+        android:id="@+id/totalPemasukkanLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="income  : Rp "
+            android:text="Rp "
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="30sp"/>
 
         <TextView
-            android:id="@+id/pemasukkan"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/totalharga"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="0.0"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="30sp"/>
     </LinearLayout>
+    <!-- close total pemasukkan -->
 
-    <!-- Divider -->
+    <!-- open garis -->
     <View
+        android:id="@+id/viewGaris"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/black"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"/>
+        app:layout_constraintTop_toBottomOf="@id/totalPemasukkanLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <!-- close garis -->
 
-    <!-- Tambah Barang -->
+    <!-- open tombol menu -->
     <LinearLayout
-        android:gravity="center_horizontal"
-        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:id="@+id/linearLayoutTombolMenu"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/viewGaris"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <Button
             android:id="@+id/daftarbarang"
-            android:layout_margin="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="35dp"
             android:text="Daftar Barang"
             android:background="@drawable/round_button"
             android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/riwayat"
+            android:layout_width="120dp"
+            android:layout_height="35dp"
+            android:text="Riwayat"
+            android:background="@drawable/round_button"
+            android:textColor="@color/white"
+            android:textSize="10sp"
             android:textStyle="bold"
-            android:padding="10dp"/>
-
-
-        <!--
-        <Button
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="test"
-            android:id="@+id/testbutton"/>
-        -->
-
-
-        <!--
-        <Button
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="scan"
-            android:id="@+id/scan"/>
-          -->
+            android:layout_marginLeft="10dp"/>
     </LinearLayout>
+    <!-- close tombol menu -->
 
-    <!-- Barcode Scanner -->
+    <!-- open barcode scanner -->
     <LinearLayout
+        android:id="@+id/linearLayoutBarcodeScanner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="10dp"
         android:gravity="center_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutTombolMenu"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginRight="10dp">
+
+            <ImageButton
+                android:id="@+id/addmanualitembtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/baseline_add_24"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manual"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
         <com.journeyapps.barcodescanner.DecoratedBarcodeView
             android:id="@+id/barcode_scanner"
             android:layout_width="180dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true" />
-    </LinearLayout>
+            android:layout_height="100dp"/>
 
-    <!-- RecyclerView for Scan Results -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginLeft="10dp">
+
+            <ImageButton
+                android:id="@+id/cleariteminputbtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/baseline_delete_24"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+    <!-- close barcode scanner -->
+
+    <!-- open label -->
+    <LinearLayout
+        android:id="@+id/labelLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutBarcodeScanner"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qty"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+    <!-- close label -->
+
+    <!-- open RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerviewmain"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="10dp"
-        android:layout_marginTop="10dp"/>
-</LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/labelLayout"
+        app:layout_constraintBottom_toTopOf="@id/btndonetransactionLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="NotSibling" />
+    <!-- close recyclerview -->
+
+    <!-- open tombol selesaikan transaksi -->
+    <LinearLayout
+        android:id="@+id/btndonetransactionLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/btndonetransaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELESAIKAN TRANSAKSI"
+            android:textStyle="bold"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    <!-- close tombol selesaikan transaksi -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

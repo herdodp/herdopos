@@ -3,13 +3,46 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:gravity="center"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/text_scan_result"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@android:color/black" />
+        android:layout_weight="1"
+        android:maxLength="10"
+        android:ellipsize="end"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp" />
+
+    <TextView
+        android:id="@+id/qty_scan_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:maxLength="10"
+        android:ellipsize="end"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp" />
+
+    <TextView
+        android:id="@+id/harga_scan_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:maxLength="20"
+        android:ellipsize="end"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp" />
 
 </LinearLayout>

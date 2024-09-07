@@ -124,50 +124,7 @@ class daftarbarang : AppCompatActivity() {
         return true
     }
 
-    /*
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.tambahbarang1 -> {
-                val inflatedaftar = LayoutInflater.from(this)
-                val viewdaftar = inflatedaftar.inflate(R.layout.addbarang, null)
 
-                AlertDialog.Builder(this)
-                    .setTitle("Tambah Barang")
-                    .setView(viewdaftar)
-                    .setCancelable(false)
-                    .setPositiveButton("Simpan") { _, _ ->
-                        val editTextNama: EditText = viewdaftar.findViewById(R.id.namabarang)
-                        val editTextHarga: EditText = viewdaftar.findViewById(R.id.hargabarang)
-                        val idbarcode = idalfanumerik()
-
-                        val nama = editTextNama.text.toString()
-                        val harga = editTextHarga.text.toString().toDoubleOrNull()
-
-                        if (nama.isNotEmpty() && harga != null) {
-                            val result = databaseHelper.insertData(nama, harga, idbarcode)
-                            if (result != -1L) {
-                                Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show()
-                                displayData() // Refresh data setelah penyimpanan
-                            } else {
-                                Toast.makeText(this, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show()
-                            }
-                        } else {
-                            Toast.makeText(this, "Isi semua kolom dengan benar!", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    .setNegativeButton("Batal") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .create()
-                    .show()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-     */
 
     private fun idalfanumerik(): String {
         val alfanumerik = "0123456789abcdefghijklmnopqrstuvwxyz"
