@@ -63,40 +63,7 @@
         app:layout_constraintRight_toRightOf="parent"/>
     <!-- close garis -->
 
-    <!-- open tombol menu -->
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:id="@+id/linearLayoutTombolMenu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@id/viewGaris"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
 
-        <Button
-            android:id="@+id/daftarbarang"
-            android:layout_width="120dp"
-            android:layout_height="35dp"
-            android:text="Daftar Barang"
-            android:background="@drawable/round_button"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            android:textStyle="bold"/>
-
-        <Button
-            android:id="@+id/riwayat"
-            android:layout_width="120dp"
-            android:layout_height="35dp"
-            android:text="Riwayat"
-            android:background="@drawable/round_button"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:layout_marginLeft="10dp"/>
-    </LinearLayout>
-    <!-- close tombol menu -->
 
     <!-- open barcode scanner -->
     <LinearLayout
@@ -106,7 +73,7 @@
         android:orientation="horizontal"
         android:padding="10dp"
         android:gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@id/linearLayoutTombolMenu"
+        app:layout_constraintTop_toBottomOf="@id/viewGaris"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
@@ -163,6 +130,45 @@
     </LinearLayout>
     <!-- close barcode scanner -->
 
+
+
+    <!-- open tombol menu -->
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:id="@+id/linearLayoutTombolMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutBarcodeScanner"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <Button
+            android:id="@+id/daftarbarang"
+            android:layout_width="120dp"
+            android:layout_height="35dp"
+            android:text="Daftar Barang"
+            android:background="@drawable/round_button"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btnriwayat"
+            android:layout_width="120dp"
+            android:layout_height="35dp"
+            android:text="Riwayat"
+            android:background="@drawable/round_button"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
+    <!-- close tombol menu -->
+
+
+
     <!-- open label -->
     <LinearLayout
         android:id="@+id/labelLayout"
@@ -171,7 +177,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/linearLayoutBarcodeScanner"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutTombolMenu"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 

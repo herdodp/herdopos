@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">HERDOPOS</string>
+
+    <string name="tentang">
+        <![CDATA[
+        <p align="justify">Selamat datang di Herdopos, solusi kasir modern untuk bisnis Anda!<br><br>
+        Herdopos adalah aplikasi kasir offline (tanpa koneksi internet) yang dirancang untuk memberikan
+        pengalaman transaksi yang cepat dan mudah. Dilengkapi dengan fitur kasir yang
+        mudah dipahami, memungkinkan Anda untuk cepat beradaptasi menggunakan aplikasi. Dengan kemampuan untuk menghasilkan dan memindai QR code,
+        Anda dapat mempercepat proses transaksi pembelian dengan pelanggan anda.
+        Mulailah perjalanan menuju kesuksesan bisnis bersama Herdopos!</p> <br><br>
+
+        <p align="justify">Donasi pengembangan aplikasi:<br>
+        - saweria: <a href="https://saweria.co/herdopos">saweria.co/herdopos</a></p> <br><br>
+
+        <p align="justify">Jika ada kritik, saran, atau masalah pada aplikasi, silahkan hubungi:<br>
+        - Email: herdodimas46@gmail.com</p>
+        <br><br>
+
+        Build with love by Vebtoo Technology
+
+        <br><br>
+
+
+
+        ]]>
+    </string>
 </resources>

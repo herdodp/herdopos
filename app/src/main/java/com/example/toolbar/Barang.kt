@@ -7,3 +7,4 @@ data class Barang(
     val idbarcode: String,
     val stokbarang: Int
 )
+

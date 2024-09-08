@@ -1,5 +1,7 @@
 package com.example.toolbar
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import com.example.toolbar.ScanResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -54,6 +56,27 @@ import java.util.UUID
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
+
+    @SuppressLint("NewApi")
+    val currentDateTime = LocalDateTime.now()
+
+
+    // Mendapatkan tanggal
+    @SuppressLint("NewApi")
+    val date = currentDateTime.toLocalDate()
+    @SuppressLint("NewApi")
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    @SuppressLint("NewApi")
+    val Datenow = date.format(dateFormatter)
+
+    // Mendapatkan waktu
+    @SuppressLint("NewApi")
+    val time = currentDateTime.toLocalTime()
+    @SuppressLint("NewApi")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    @SuppressLint("NewApi")
+    val Timenow = time.format(timeFormatter)
+
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private var bluetoothDevice: BluetoothDevice? = null
     private var namatoko: String? = null
@@ -70,10 +93,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonclearinput : ImageButton
 
-    private lateinit var totalharga : TextView
+    //private lateinit var totalharga : TextView
 
     private var totalHarga = 0.0
     private lateinit var totalHargaTextView: TextView
+
+    private lateinit var databasehelper : DatabaseHelper
+
+    //list barang
+    private var listbarang: MutableList<Int> = mutableListOf()
 
 
     @SuppressLint("MissingInflatedId")
@@ -89,10 +117,30 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        // button riwayat
+        val buttonriwayat = findViewById<Button>(R.id.btnriwayat)
+        buttonriwayat.setOnClickListener {
+            startActivity(Intent(this@MainActivity, riwayattransaksi::class.java))
+            finish()
+        }
+
 
 
         //total harga
         totalHargaTextView = findViewById(R.id.totalharga) // Ganti dengan ID TextView Anda
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         //button selesaikan transaksi
@@ -118,6 +166,27 @@ class MainActivity : AppCompatActivity() {
                             selesaikanTransaksi()
 
                         }
+
+                    //val scannedData =
+                    //Toast.makeText(this@MainActivity, "Scanned QR Code: $scannedData", Toast.LENGTH_LONG).show()
+
+                    // Add scan result to list and update RecyclerView
+                    //scanResults.add(ScanResult(scannedData))
+                    //adapter.notifyDataSetChanged()
+
+                    //val databaseHelper = DatabaseHelper(this@MainActivity)
+                    //val barang = databaseHelper.getBarangByBarcode(scannedData)
+
+                    //menyimpan data di table riwayat
+                   // val result = databasehelper.insertDatariwayat(barang.nama, qtybarang, hargaasli, totalharga, jamriwayat, tanggalriwayat, nomorstruk)
+                    //if (result != -1L) {
+                     //Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show()
+                        //displayData() // Refresh data setelah penyimpanan
+                        //startActivity(Intent(this, daftarbarang::class.java))
+                        //finish()
+                    //} else {
+                       // Toast.makeText(this, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show()
+                   // }
 
 
                 }
@@ -234,6 +303,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.setting -> {
                 startActivity(Intent(this, setting2::class.java))
+                finish()
                 true
             }
             R.id.bantuan -> {
@@ -251,6 +321,12 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.testbutton -> {
                 testPrintStruk()
+                true
+            }
+
+            R.id.about -> {
+                startActivity(Intent(this@MainActivity, about::class.java))
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -306,6 +382,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
+
+
+
+
+
     // Method to send data to the printer
     private fun sendPrintData(outputStream: OutputStream, data: String) {
         try {
@@ -317,6 +400,18 @@ class MainActivity : AppCompatActivity() {
             Log.e("Printer", "Error while sending data to printer: ${e.message}")
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Fungsi untuk mencetak struk kasir
     @SuppressLint("MissingPermission")
@@ -362,19 +457,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private fun printReceipt(outputStream: OutputStream) {
         val receipt = """
             
@@ -399,6 +481,10 @@ class MainActivity : AppCompatActivity() {
         sendPrintData(outputStream, receipt)
     }
 
+
+
+
+
     private val bluetoothRequestLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -406,12 +492,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+
+
+
+
     // Handle runtime permission result
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera permission is required to use QR code scanner", Toast.LENGTH_LONG).show()
+                //Toast.makeText(this, "Camera permission is required to use QR code scanner", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -425,6 +516,14 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         barcodeView.pause()
     }
+
+
+
+
+
+
+
+
 
     // Barcode callback
     private val callback = object : BarcodeCallback {
@@ -463,6 +562,8 @@ class MainActivity : AppCompatActivity() {
                         val jumlahitemcount = itemcount.text.toString().toInt()
                         val totalharga = jumlahitemcount*barang.harga
                         val count = jumlahitemcount
+
+                        listbarang.add(count)
 
 
                         totalHarga += totalharga
@@ -526,6 +627,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
+
     @SuppressLint("MissingPermission")
     private fun selesaikanTransaksi() {
         // Buat format struk kasir dengan item dari RecyclerView
@@ -545,18 +652,55 @@ class MainActivity : AppCompatActivity() {
         strukBuilder.append("Item    Qty    Price\n")
         strukBuilder.append("---------------------------\n")
 
+        val databasehelper = DatabaseHelper(this@MainActivity)
+        val no_struk = randomnostruk()
+
         for (scanResult in scanResults) {
             val harga1 = scanResult.harga
+            val cleanedHargaString = harga1.replace("Rp", "")
+                .replace(".", "")
+                .replace(",", ".")
+                .trim()
             //val parsenonrp = formatRupiahnonrp(harga1)
             //val parseharga = parseToDouble(harga1)
 
             strukBuilder.append("${scanResult.text}   23   ${harga1}\n")
+
+
+
+
+            val  result = databasehelper.insertDatariwayat(
+                nama_barang = scanResult.text,
+                harga_asli = cleanedHargaString.toDouble(),
+                jam_riwayat = Timenow,
+                nomor_struk = no_struk,
+                qty_barang = 20,
+                tanggal_riwayat = Datenow,
+                total_harga = totalHarga
+            )
+
+            if (result == -1L) {
+                Toast.makeText(this, "Gagal menyimpan data riwayat!", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            //listbarang.add(scanResult.text)
+
+
+
         }
+
+        Toast.makeText(this, "berhasil menyimpan data riwayat!", Toast.LENGTH_SHORT).show()
+
 
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("Total               ${formatRupiahnonrp(totalHarga)}\n")
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("       Terima Kasih       \n\n")
+
+        val intent = Intent(this@MainActivity, riwayattransaksi::class.java)
+        intent.putExtra("nostruk", no_struk)
+        startActivity(intent)
 
 
         // Tampilkan struk kasir di Logcat atau cetak ke printer
@@ -601,6 +745,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
+    private fun randomnostruk(): String {
+        val alfanumerik = "0123456789abcdefghijklmnopqrstuvwxyz"
+        return (1..10).map { alfanumerik.random() }.joinToString("")
+    }
 
 
 
@@ -674,6 +823,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    @SuppressLint("MissingSuperCall")
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("keluar dari aplikasi ?")
+        builder.setPositiveButton("Keluar"){_,_->
+            finishAffinity()
+        }
+        builder.setNegativeButton("Batal"){dialog,_->
+            dialog.dismiss()
+        }
+        builder.create()
+        builder.show()
+        //super.onBackPressed()
+    }
 
 
 }
