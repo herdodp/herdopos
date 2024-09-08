@@ -1,17 +1,21 @@
 package com.example.toolbar
 
 import DatabaseHelper
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import org.w3c.dom.Text
 
 @Suppress("DEPRECATION")
 class riwayattransaksi : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,11 +37,17 @@ class riwayattransaksi : AppCompatActivity() {
         val nomorStruk = "${getnostruk}"  // Ganti dengan nomor struk yang sesuai
         val riwayat = databasehelper.gettransaksiBykodestruk(nomorStruk)
 
+        val showstruk = findViewById<TextView>(R.id.textstrtuk)
+        showstruk.text = riwayat?.stringstrukdb
+
+
+
 
         Toast.makeText(applicationContext,"no struk : ${getnostruk}",Toast.LENGTH_SHORT).show()
-        Toast.makeText(applicationContext,"riwayat nama : ${riwayat?.namabarang}",Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext,"${riwayat?.stringstrukdb}",Toast.LENGTH_SHORT).show()
 
-      
+
+
 
 
 

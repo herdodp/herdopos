@@ -50,6 +50,7 @@ import kotlinx.coroutines.*
 import java.io.IOException
 import java.io.OutputStream
 import java.text.NumberFormat
+import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
@@ -641,10 +642,6 @@ class MainActivity : AppCompatActivity() {
         val totalHargaText = formatRupiahnonrp(totalHarga)
         val totalHargaDouble = parseToDouble(totalHargaText)
 
-        //val harga = parseToDouble(scanResult.harga)
-
-
-
         // Format struk kasir
         strukBuilder.append("\n\n*** ${getnamatoko} ***\n")
         strukBuilder.append("${getalamat}\n")
@@ -655,58 +652,52 @@ class MainActivity : AppCompatActivity() {
         val databasehelper = DatabaseHelper(this@MainActivity)
         val no_struk = randomnostruk()
 
+        // Tambahkan item ke struk
         for (scanResult in scanResults) {
             val harga1 = scanResult.harga
             val cleanedHargaString = harga1.replace("Rp", "")
                 .replace(".", "")
                 .replace(",", ".")
                 .trim()
-            //val parsenonrp = formatRupiahnonrp(harga1)
-            //val parseharga = parseToDouble(harga1)
 
             strukBuilder.append("${scanResult.text}   23   ${harga1}\n")
-
-
-
-
-            val  result = databasehelper.insertDatariwayat(
-                nama_barang = scanResult.text,
-                harga_asli = cleanedHargaString.toDouble(),
-                jam_riwayat = Timenow,
-                nomor_struk = no_struk,
-                qty_barang = 20,
-                tanggal_riwayat = Datenow,
-                total_harga = totalHarga
-            )
-
-            if (result == -1L) {
-                Toast.makeText(this, "Gagal menyimpan data riwayat!", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            //listbarang.add(scanResult.text)
-
-
-
         }
 
-        Toast.makeText(this, "berhasil menyimpan data riwayat!", Toast.LENGTH_SHORT).show()
-
-
+        // Tambahkan informasi total dan waktu ke struk
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("Total               ${formatRupiahnonrp(totalHarga)}\n")
         strukBuilder.append("---------------------------\n")
+        strukBuilder.append("${Timenow}\n")
+        strukBuilder.append("${Datenow}\n")
         strukBuilder.append("       Terima Kasih       \n\n")
 
+        // Dapatkan struk utuh setelah selesai menambah semua elemen
+        val strukutuh = strukBuilder.toString()
+
+        // Menyimpan data struk ke database
+        val result = databasehelper.insertDatariwayat(
+            stringstruk = strukutuh,
+            nostruk = no_struk,
+            jamstruk = Timenow,
+            tanggaltruk = Datenow
+        )
+
+        if (result == -1L) {
+            Toast.makeText(this, "Gagal menyimpan data struk!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Toast.makeText(this, "Berhasil menyimpan data struk!", Toast.LENGTH_SHORT).show()
+
+        // Lanjutkan dengan Intent ke halaman riwayat
         val intent = Intent(this@MainActivity, riwayattransaksi::class.java)
         intent.putExtra("nostruk", no_struk)
         startActivity(intent)
 
-
         // Tampilkan struk kasir di Logcat atau cetak ke printer
-        Log.d("StrukKasir", strukBuilder.toString())
+        Log.d("StrukKasir", strukutuh)
 
-        // Jika Anda ingin mencetak ke printer, panggil fungsi `sendPrintData`
+        // Cetak struk jika diperlukan
         bluetoothDevice?.let { device ->
             val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
             lifecycleScope.launch(Dispatchers.IO) {
@@ -716,13 +707,12 @@ class MainActivity : AppCompatActivity() {
                     val outputStream: OutputStream = socket.outputStream
 
                     // Kirim data struk ke printer
-                    sendPrintData(outputStream, strukBuilder.toString())
+                    sendPrintData(outputStream, strukutuh)
 
                     outputStream.close()
                     socket.close()
 
                     withContext(Dispatchers.Main) {
-
                         lifecycleScope.launch {
                             Toast.makeText(applicationContext, "Struk berhasil dicetak!", Toast.LENGTH_SHORT).show()
                             delay(2000) // Delay selama 2 detik

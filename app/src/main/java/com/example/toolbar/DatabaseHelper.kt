@@ -10,7 +10,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "Kasir.db"
-        private const val DATABASE_VERSION = 6
+        private const val DATABASE_VERSION = 8
 
         // Table barang
         const val TABLE_NAME = "Barang"
@@ -22,14 +22,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // Table riwayat transaksi
         const val TABLE_RIWAYAT = "riwayat"
-        const val COLUMN_ID_RIWAYAT = "id_riwayat"
-        const val COLUMN_NAMA_BARANG = "nama_barang"
-        const val COLUMN_QTY_BARANG = "qty_barang"
-        const val COLUMN_HARGA_ASLI = "harga_asli"
-        const val COLUMN_TOTAL_HARGA = "total_harga"
-        const val COLUMN_JAM_RIWAYAT = "jam_riwayat"
-        const val COLUMN_TANGGAL_RIWAYAT = "tanggal_riwayat"
-        const val COLUMN_NO_STRUK = "nomor_struk"
+        const val COLUMN_ID_STRUK = "id_struk"
+        const val COLUMN_STRING_STRUK = "stringstruk"
+        const val COLUMN_NO_STRUK = "nostruk"
+        const val COLUMN_JAM_STRUK= "jamstruk"
+        const val COLUMN_TANGGAL_STRUK= "tanggakstruk"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -37,9 +34,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_NAME TEXT, $COLUMN_PRICE REAL, $COLUMN_BARCODE TEXT, $COLUMN_STOK INTEGER)")
         db?.execSQL(createTableBarang)
 
-        val createTableRiwayat = ("CREATE TABLE $TABLE_RIWAYAT ($COLUMN_ID_RIWAYAT INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "$COLUMN_NAMA_BARANG TEXT, $COLUMN_QTY_BARANG INTEGER, $COLUMN_HARGA_ASLI REAL, $COLUMN_TOTAL_HARGA REAL, $COLUMN_JAM_RIWAYAT TEXT, $COLUMN_TANGGAL_RIWAYAT TEXT, $COLUMN_NO_STRUK TEXT)")
+        val createTableRiwayat = ("CREATE TABLE $TABLE_RIWAYAT ($COLUMN_ID_STRUK INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_STRING_STRUK TEXT, $COLUMN_NO_STRUK TEXT, $COLUMN_JAM_STRUK TEXT, $COLUMN_TANGGAL_STRUK TEXT)")
         db?.execSQL(createTableRiwayat)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -148,19 +146,22 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     // ============================================== OPEN DATABASE RIWAYAT TRANSAKSI ===================================
 
     // Fungsi untuk menyimpan data ke dalam database riwayat
-    fun insertDatariwayat(nama_barang: String, qty_barang: Int, harga_asli: Double, total_harga: Double, jam_riwayat: String, tanggal_riwayat: String, nomor_struk: String): Long {
+    fun insertDatariwayat(stringstruk: String, nostruk: String, jamstruk: String, tanggaltruk: String): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
-            put(COLUMN_NAMA_BARANG, nama_barang)
-            put(COLUMN_QTY_BARANG, qty_barang)
-            put(COLUMN_HARGA_ASLI, harga_asli)
-            put(COLUMN_TOTAL_HARGA, total_harga)
-            put(COLUMN_JAM_RIWAYAT, jam_riwayat)
-            put(COLUMN_TANGGAL_RIWAYAT, tanggal_riwayat)
-            put(COLUMN_NO_STRUK, nomor_struk)
+            put(COLUMN_STRING_STRUK, stringstruk)
+            put(COLUMN_NO_STRUK, nostruk)
+            put(COLUMN_JAM_STRUK, jamstruk)
+            put(COLUMN_TANGGAL_STRUK, tanggaltruk)
         }
-        return db.insert(TABLE_RIWAYAT, null, contentValues)
+        val result = db.insert(TABLE_RIWAYAT, null, contentValues)
+        db.close()
+        return result
     }
+
+
+
+
 
     // Fungsi untuk mengambil semua data dari database riwayat
     fun getAllDatariwayat(): List<Riwayat> {
@@ -171,16 +172,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         if (cursor.moveToFirst()) {
             do {
-                val idriwayat = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID_RIWAYAT))
-                val namabarang = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAMA_BARANG))
-                val qtybarang = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_QTY_BARANG))
-                val hargaasli = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_HARGA_ASLI))
-                val totalharga = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_HARGA))
-                val jamriwayat = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JAM_RIWAYAT))
-                val tanggalriwayat = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TANGGAL_RIWAYAT))
+                val idstruk = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID_STRUK))
+                val stringstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STRING_STRUK))
                 val nostruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NO_STRUK))
+                val jamstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JAM_STRUK))
+                val tanggalstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TANGGAL_STRUK))
 
-                val riwayat = Riwayat(idriwayat, namabarang, qtybarang, hargaasli, totalharga, jamriwayat, tanggalriwayat, nostruk)
+
+
+                val riwayat = Riwayat(idstruk, stringstruk, nostruk,jamstruk, tanggalstruk)
                 riwayatList.add(riwayat)
             } while (cursor.moveToNext())
         }
@@ -188,29 +188,29 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return riwayatList
     }
 
+
+
+
     // Method to get Riwayat by nomor struk di database riwayat
     @SuppressLint("Range")
     fun gettransaksiBykodestruk(nostruk: String): Riwayat? {
         val db = this.readableDatabase
         val cursor = db.query(
             TABLE_RIWAYAT,
-            arrayOf(COLUMN_ID_RIWAYAT, COLUMN_NAMA_BARANG, COLUMN_QTY_BARANG, COLUMN_HARGA_ASLI, COLUMN_TOTAL_HARGA, COLUMN_JAM_RIWAYAT, COLUMN_TANGGAL_RIWAYAT, COLUMN_NO_STRUK),
+            arrayOf(COLUMN_ID_STRUK, COLUMN_STRING_STRUK, COLUMN_NO_STRUK, COLUMN_JAM_STRUK, COLUMN_TANGGAL_STRUK),
             "$COLUMN_NO_STRUK = ?",
             arrayOf(nostruk),
             null, null, null
         )
 
         if (cursor.moveToFirst()) {
-            val idriwayat = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID_RIWAYAT))
-            val namabarang = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAMA_BARANG))
-            val qtybarang = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_QTY_BARANG))
-            val hargaasli = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_HARGA_ASLI))
-            val totalharga = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_HARGA))
-            val jamriwayat = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JAM_RIWAYAT))
-            val tanggalriwayat = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TANGGAL_RIWAYAT))
-            val nostruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NO_STRUK))
+            val idstruk = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID_STRUK))
+            val stringstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STRING_STRUK))
+            val jamstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JAM_STRUK))
+            val tanggalstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TANGGAL_STRUK))
+
             cursor.close()
-            return Riwayat(idriwayat, namabarang, qtybarang, hargaasli, totalharga, jamriwayat, tanggalriwayat, nostruk)
+            return Riwayat(idstruk, stringstruk, nostruk, jamstruk, tanggalstruk)
         }
 
         cursor.close()
