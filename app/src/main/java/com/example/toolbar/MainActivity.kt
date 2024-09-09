@@ -104,6 +104,8 @@ class MainActivity : AppCompatActivity() {
     //list barang
     private var listbarang: MutableList<Int> = mutableListOf()
 
+    private var count : Int = 0
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,11 +160,11 @@ class MainActivity : AppCompatActivity() {
 
                         lifecycleScope.launch {
                             Toast.makeText(applicationContext, "Process print struk.", Toast.LENGTH_SHORT).show()
-                            delay(1000) // Delay selama 2 detik
+                            delay(500)
                             Toast.makeText(applicationContext, "Process print struk. .", Toast.LENGTH_SHORT).show()
-                            delay(1000)
+                            delay(500)
                             Toast.makeText(applicationContext, "Process print struk. . .", Toast.LENGTH_SHORT).show()
-                            delay(2000)
+                            delay(500)
 
                             selesaikanTransaksi()
 
@@ -576,8 +578,6 @@ class MainActivity : AppCompatActivity() {
                         adapter.notifyDataSetChanged()
 
 
-
-
                     }
                     builder.setNegativeButton("Cancel"){dialog,_->
                         dialog.dismiss()
@@ -634,6 +634,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
     @SuppressLint("MissingPermission")
     private fun selesaikanTransaksi() {
         // Buat format struk kasir dengan item dari RecyclerView
@@ -645,21 +647,23 @@ class MainActivity : AppCompatActivity() {
         val databasehelper = DatabaseHelper(this@MainActivity)
         val no_struk = randomnostruk()
 
-
         // Format struk kasir
         strukBuilder.append("\n\n*** ${getnamatoko} ***\n")
         strukBuilder.append("${getalamat}\n")
-        strukBuilder.append("No. struk : ${no_struk}")
+        strukBuilder.append("No. struk : ${no_struk}\n")
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("Item    Qty    Price\n")
         strukBuilder.append("---------------------------\n")
 
-
         // Tambahkan item ke struk
-        for (scanResult in scanResults) {
+        // Gunakan indeks untuk mengakses elemen di listbarang sesuai urutan scanResults
+        for ((index, scanResult) in scanResults.withIndex()) {
             val harga1 = scanResult.harga
 
-            strukBuilder.append("${scanResult.text}   23   ${harga1}\n")
+            // Pastikan indeks berada dalam rentang listbarang
+            val qty = if (index < listbarang.size) listbarang[index] else 0
+
+            strukBuilder.append("${scanResult.text}   ${qty}   ${harga1}\n")
         }
 
         // Tambahkan informasi total dan waktu ke struk
@@ -732,6 +736,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Pilih perangkat Bluetooth terlebih dahulu", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
 
