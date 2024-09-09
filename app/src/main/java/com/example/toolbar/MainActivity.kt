@@ -642,23 +642,22 @@ class MainActivity : AppCompatActivity() {
         val totalHargaText = formatRupiahnonrp(totalHarga)
         val totalHargaDouble = parseToDouble(totalHargaText)
 
+        val databasehelper = DatabaseHelper(this@MainActivity)
+        val no_struk = randomnostruk()
+
+
         // Format struk kasir
         strukBuilder.append("\n\n*** ${getnamatoko} ***\n")
         strukBuilder.append("${getalamat}\n")
+        strukBuilder.append("No. struk : ${no_struk}")
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("Item    Qty    Price\n")
         strukBuilder.append("---------------------------\n")
 
-        val databasehelper = DatabaseHelper(this@MainActivity)
-        val no_struk = randomnostruk()
 
         // Tambahkan item ke struk
         for (scanResult in scanResults) {
             val harga1 = scanResult.harga
-            val cleanedHargaString = harga1.replace("Rp", "")
-                .replace(".", "")
-                .replace(",", ".")
-                .trim()
 
             strukBuilder.append("${scanResult.text}   23   ${harga1}\n")
         }

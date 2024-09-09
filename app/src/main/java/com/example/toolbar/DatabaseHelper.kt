@@ -5,12 +5,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.toolbar.Barang
 import com.example.toolbar.Riwayat
+import com.example.toolbar.riwayatlist
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "Kasir.db"
-        private const val DATABASE_VERSION = 8
+        private const val DATABASE_VERSION = 10
 
         // Table barang
         const val TABLE_NAME = "Barang"
@@ -164,29 +165,27 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
 
     // Fungsi untuk mengambil semua data dari database riwayat
-    fun getAllDatariwayat(): List<Riwayat> {
-        val riwayatList = mutableListOf<Riwayat>()
+    fun getAllDatariwayat(): List<riwayatlist> {
+        val riwayatList = mutableListOf<riwayatlist>()
         val db = this.readableDatabase
         val query = "SELECT * FROM $TABLE_RIWAYAT"
         val cursor = db.rawQuery(query, null)
 
         if (cursor.moveToFirst()) {
             do {
-                val idstruk = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID_STRUK))
-                val stringstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STRING_STRUK))
                 val nostruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NO_STRUK))
                 val jamstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JAM_STRUK))
                 val tanggalstruk = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TANGGAL_STRUK))
 
-
-
-                val riwayat = Riwayat(idstruk, stringstruk, nostruk,jamstruk, tanggalstruk)
+                // Gunakan riwayatlist sebagai tipe data yang benar
+                val riwayat = riwayatlist(nostruk, jamstruk, tanggalstruk)
                 riwayatList.add(riwayat)
             } while (cursor.moveToNext())
         }
         cursor.close()
         return riwayatList
     }
+
 
 
 
@@ -215,6 +214,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         cursor.close()
         return null
+    }
+
+    fun deleteDatariwayat(nostruk: String): Int {
+        val db = this.writableDatabase
+        return db.delete(TABLE_NAME, "$COLUMN_NO_STRUK = ?", arrayOf(nostruk))
     }
 
     // ============================================== CLOSE DATABASE RIWAYAT TRANSAKSI ===================================
