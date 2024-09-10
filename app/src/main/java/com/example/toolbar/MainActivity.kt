@@ -1,7 +1,9 @@
 package com.example.toolbar
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+
+import java.util.Calendar
+//import java.time.LocalDateTime
+//import java.time.format.DateTimeFormatter
 import com.example.toolbar.ScanResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,10 +61,29 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("NewApi")
-    val currentDateTime = LocalDateTime.now()
+    //val currentDateTime = LocalDateTime.now()
+    // Membuat instance dari Calendar
+    val calendar = Calendar.getInstance()
 
+    // Mendapatkan komponen waktu (jam, menit, detik)
+    val hour = calendar.get(Calendar.HOUR_OF_DAY) // 24-hour format
+    val minute = calendar.get(Calendar.MINUTE)
+    val second = calendar.get(Calendar.SECOND)
+
+    // Mendapatkan komponen tanggal (tahun, bulan, hari)
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH) + 1 // Januari adalah bulan ke-0, sehingga perlu +1
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val Timenow = "${hour}:${minute}:${second}"
+    val Datenow = "${day}/${month}/${year}"
+
+// Tampilkan hasil
+   // println("Waktu saat ini: $hour:$minute:$second")
+    //println("Tanggal saat ini: $day-$month-$year")
 
     // Mendapatkan tanggal
+    /*
     @SuppressLint("NewApi")
     val date = currentDateTime.toLocalDate()
     @SuppressLint("NewApi")
@@ -78,6 +99,9 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("NewApi")
     val Timenow = time.format(timeFormatter)
 
+     */
+
+
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private var bluetoothDevice: BluetoothDevice? = null
     private var namatoko: String? = null
@@ -89,7 +113,12 @@ class MainActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST_CODE = 1
 
     private lateinit var adapter: ScanResultAdapter
+
+    //jika scan barang menggunakan scanner
     private val scanResults = mutableListOf<ScanResult>()
+
+    //jika input manual
+    private val inputmanual = mutableListOf<ScanResult>()
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonclearinput : ImageButton
@@ -104,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     //list barang
     private var listbarang: MutableList<Int> = mutableListOf()
 
-    private var count : Int = 0
+    //private var count : Int = 0
 
 
     @SuppressLint("MissingInflatedId")
@@ -125,6 +154,50 @@ class MainActivity : AppCompatActivity() {
         buttonriwayat.setOnClickListener {
             startActivity(Intent(this@MainActivity, riwayattransaksi::class.java))
             finish()
+        }
+
+
+
+        //button manual
+        val buttonmanual = findViewById<ImageButton>(R.id.addmanualitembtn)
+        buttonmanual.setOnClickListener {
+            val inflatebuild = LayoutInflater.from(this@MainActivity).inflate(R.layout.input_manual, null)
+
+            val namabarang = inflatebuild.findViewById<EditText>(R.id.namabarang)
+            val jumlahbarang = inflatebuild.findViewById<EditText>(R.id.jumlahbarang)
+            val hargabarang = inflatebuild.findViewById<EditText>(R.id.hargabarang)
+
+            val builder = AlertDialog.Builder(this@MainActivity)
+            builder.setView(inflatebuild)
+            builder.setTitle("Masukkan Data Pembelian")
+            builder.setCancelable(false)
+            builder.setPositiveButton("Tambah ke chart"){_,_->
+
+                val getnamabarang = namabarang.text.toString()
+                val getjumlahbarang = jumlahbarang.text.toString().toInt()
+                val gethargabarang = hargabarang.text.toString().toInt()
+
+                val itemtotalHarga = getjumlahbarang * gethargabarang
+                val count = getjumlahbarang
+
+                // Tambahkan ke daftar barang dan daftar transaksi
+                listbarang.add(count)
+                totalHarga += itemtotalHarga
+
+                // Perbarui tampilan total harga
+                totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
+
+                scanResults.add(ScanResult(getnamabarang, count.toString(), formatRupiah(itemtotalHarga.toDouble())))
+
+                adapter.notifyDataSetChanged()
+
+
+            }
+            builder.setNegativeButton("Batal"){ dialog,_->
+                dialog.dismiss()
+            }
+            builder.create()
+            builder.show()
         }
 
 
@@ -664,6 +737,12 @@ class MainActivity : AppCompatActivity() {
             val qty = if (index < listbarang.size) listbarang[index] else 0
 
             strukBuilder.append("${scanResult.text}   ${qty}   ${harga1}\n")
+
+            val isUpdated = databasehelper.updateStokBarang(scanResult.text, qty)
+            if (!isUpdated) {
+                Toast.makeText(this, "Gagal mengurangi stok barang: ${scanResult.text}", Toast.LENGTH_SHORT).show()
+                return // Jika gagal, batalkan proses transaksi
+            }
         }
 
         // Tambahkan informasi total dan waktu ke struk

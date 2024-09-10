@@ -11,7 +11,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "Kasir.db"
-        private const val DATABASE_VERSION = 10
+        private const val DATABASE_VERSION = 12
 
         // Table barang
         const val TABLE_NAME = "Barang"
@@ -32,7 +32,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableBarang = ("CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "$COLUMN_NAME TEXT, $COLUMN_PRICE REAL, $COLUMN_BARCODE TEXT, $COLUMN_STOK INTEGER)")
+                + "$COLUMN_NAME TEXT, $COLUMN_PRICE REAL, $COLUMN_BARCODE TEXT, $COLUMN_STOK INTEGER DEFAULT 0)")
         db?.execSQL(createTableBarang)
 
         val createTableRiwayat = ("CREATE TABLE $TABLE_RIWAYAT ($COLUMN_ID_STRUK INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -129,6 +129,35 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return null
     }
 
+
+
+
+    fun updateStokBarang(barcode: String, qty: Int): Boolean {
+        val db = this.writableDatabase
+        val cursor = db.rawQuery("SELECT stok FROM $TABLE_NAME WHERE $COLUMN_NAME = ?", arrayOf(barcode))
+
+        return if (cursor.moveToFirst()) {
+            val currentStok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STOK))
+            val newStok = currentStok - qty
+
+            if (newStok >= 0) {
+                val contentValues = ContentValues().apply {
+                    put(COLUMN_STOK, newStok)
+                }
+                val rowsAffected = db.update(TABLE_NAME, contentValues, "$COLUMN_NAME = ?", arrayOf(barcode))
+                cursor.close()
+                rowsAffected > 0
+            } else {
+                cursor.close()
+                false // Stok tidak mencukupi
+            }
+        } else {
+            cursor.close()
+            false // Barang tidak ditemukan
+        }
+    }
+
+
     // ============================================== CLOSE DATABASE BARANG =========================================
 
 
@@ -218,8 +247,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun deleteDatariwayat(nostruk: String): Int {
         val db = this.writableDatabase
-        return db.delete(TABLE_NAME, "$COLUMN_NO_STRUK = ?", arrayOf(nostruk))
+        return db.delete(TABLE_RIWAYAT, "$COLUMN_NO_STRUK = ?", arrayOf(nostruk))
     }
+
 
     // ============================================== CLOSE DATABASE RIWAYAT TRANSAKSI ===================================
 }

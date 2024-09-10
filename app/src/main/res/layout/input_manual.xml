@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Nama barang"
+            android:id="@+id/namabarang"
+            android:padding="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:inputType="number"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:hint="Jumlah barang"
+                android:id="@+id/jumlahbarang"
+                android:padding="10dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:textAlignment="center"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PCS"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp "
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
+
+            <EditText
+                android:layout_marginLeft="10dp"
+                android:inputType="number"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:hint="Harga barang"
+                android:id="@+id/hargabarang"
+                android:padding="10dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
