@@ -177,19 +177,41 @@ class MainActivity : AppCompatActivity() {
                 val getjumlahbarang = jumlahbarang.text.toString().toInt()
                 val gethargabarang = hargabarang.text.toString().toInt()
 
-                val itemtotalHarga = getjumlahbarang * gethargabarang
-                val count = getjumlahbarang
+                val databaseHelper = DatabaseHelper(this@MainActivity)
+                val barang = databaseHelper.getBarangBynamabarang(getnamabarang)
 
-                // Tambahkan ke daftar barang dan daftar transaksi
-                listbarang.add(count)
-                totalHarga += itemtotalHarga
+                if (barang != null) {
+                    val stok = barang.stokbarang
+                    if (stok >= getjumlahbarang) {
+                        val itemTotalHarga = getjumlahbarang * gethargabarang
+                        val count = getjumlahbarang
 
-                // Perbarui tampilan total harga
-                totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
+                        listbarang.add(getjumlahbarang)
+                        totalHarga += itemTotalHarga
 
-                scanResults.add(ScanResult(getnamabarang, count.toString(), formatRupiah(itemtotalHarga.toDouble())))
+                        // Perbarui tampilan total harga
+                        totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
-                adapter.notifyDataSetChanged()
+                        scanResults.add(ScanResult(getnamabarang, count.toString(), formatRupiah(itemTotalHarga.toDouble())))
+
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        Toast.makeText(this@MainActivity, "Stok tidak mencukupi untuk barang: $getnamabarang", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this@MainActivity, "Barang tidak ditemukan: $getnamabarang", Toast.LENGTH_SHORT).show()
+                }
+
+
+
+
+
+
+
+
+
+
+
 
 
             }

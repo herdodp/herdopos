@@ -11,7 +11,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "Kasir.db"
-        private const val DATABASE_VERSION = 12
+        private const val DATABASE_VERSION = 13
 
         // Table barang
         const val TABLE_NAME = "Barang"
@@ -112,6 +112,34 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK),
             "$COLUMN_BARCODE = ?",
             arrayOf(barcode),
+            null, null, null
+        )
+
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val nama = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+            val harga = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE))
+            val barcode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BARCODE))
+            val stok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STOK))
+            cursor.close()
+            return Barang(id, nama, harga, barcode, stok)
+        }
+
+        cursor.close()
+        return null
+    }
+
+
+
+    //get data by nama barang
+    @SuppressLint("Range")
+    fun getBarangBynamabarang(namabarang: String): Barang? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLE_NAME,
+            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK),
+            "$COLUMN_NAME = ?",
+            arrayOf(namabarang),
             null, null, null
         )
 
