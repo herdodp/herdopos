@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HERDOPOS</string>
+    <string name="app_name">Herdopos</string>
 
     <string name="tentang">
         <![CDATA[
@@ -25,4 +25,219 @@
 
         ]]>
     </string>
+
+
+
+    <string name="tescetakstruk">
+
+        <![CDATA[
+        <p>
+        Untuk menghubungkan mesin pos kasir dengan perangkat android dan melakukan uji coba cetak struk <br>
+        Langkah : <br>
+        1. Sandingkan bluetooth perangkat android dan mesin pos kasir di pengaturan perangkat <br>
+        2. Buka aplikasi Herdopos <br>
+        3. Ketuk icon titik tiga di pojok kanan atas <br>
+        4. Ketuk menu "Pilih perangkat bluetooth" dan pilih bluetooth mesin pos kasir yang sudah disandingkan <br>
+        5. Tunggu sampai muncul tulisan gelembung "Perangkat telah terhubung" <br>
+        6. Untuk uji coba cetak struk, pilih menu "Tes cetak struk" <br>
+        7. Jika mesin pos belum merespon, ulangi step 6
+        <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+    <string name="pengaturan">
+
+        <![CDATA[
+
+        <p>Untuk mengganti nama dan alamat toko yang akan dicantumkan dalam struk. <br>
+        Langkah : <br>
+        1. Ketuk icon titik tiga di pojok kanan atas pada halaman utama <br>
+        2. Ketuk "ubah nama toko" untuk mengganti nama toko <br>
+        3. Ketuk "ubah alamat toko" untuk mengubah alamat toko <br>
+        <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+    <string name="tombolmanual">
+
+        <![CDATA[
+
+        <p>Untuk memasukkan data barang yang akan dilakukan transaksi secara manual (tanpa menggunakan scanning QRcode)<br>
+        Langkah : <br>
+        1. Ketuk tombol manual berupa icon + (plus) <br>
+        2. Isi data barang berupa nama barang, jumlah barang, dan harga barang <br>
+        3. Nama barang harus sesuai dengan yang terdaftar di daftar barang agar stok berkurang sesuai nama barang <br>
+        4. Jika sudah diisi, ketuk tombol "Tambah ke chart" untuk memasukkan data barang ke list transaksi. <br>
+        5. Jika ingin menambahkan lagi data barang untuk transaksi, ulangi langkah nomor 4 <br>
+        <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+
+
+
+
+    <string name="tombolclear">
+
+        <![CDATA[
+
+        <p>Untuk membersihkan barang di daftar transaksi dan total harga <br>
+        Langkah : <br>
+        1. Ketuk tombol "clear" kemudian pilih tombol "bersihkan" <br>
+        2. Tombol clear menyebabkan terputusnya koneksi bluetooth sehingga harus di hubungkan ulang <br>
+        <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+
+
+
+    <string name="tomboldaftarbarang">
+
+        <![CDATA[
+
+        <p>Untuk menampilkan semua data barang yang dimasukkan kedalam database aplikasi <br>
+        Langkah : <br>
+        1. Ketuk tombol "Daftar barang" <br>
+        2. Terdapat tombol "Tambah" untuk menambahkan data barang baru <br>
+        3. Tombol icon search untuk mencari nama barang <br>
+        4. Jumlah barang untuk menampilkan total jumlah barang yang terdaftar <br>
+        5. Pada setiap barang terdapat tombol "hapus" untuk menghapus barang, "QRcode untuk menampilkan QRcode barang, "Edit" untuk mengedit data barang <br>
+        6. QRcode barang akan ter generate otomatis ketika berhasil ditambahkan. <br>
+        7. Jika data barang dihapus/terhapus maka QRcode juga terhapus dan akan berbeda jika data barang ditambahkan ulang <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+
+
+
+
+
+
+    <string name="tombolriwayat">
+
+        <![CDATA[
+
+        <p>Untuk menampilkan daftar transaksi yang berhasil dilakukan <br>
+        Langkah : <br>
+        1. ketuk tombol "Riwayat" <br>
+        2. Terdapat icon search untuk mencari riwayat transaksi berdasarkan kode struk <br>
+        3. Pada tiap daftar transaksi terdapat icon eye untuk menampilkan data struk transaksi dan tombol hapus untuk menghapus riwayat transaksi  <br>
+        <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+
+
+
+
+
+    <string name="tambahbarang">
+
+        <![CDATA[
+
+        <p>Untuk menambahkan barang ke database lokal aplikasi herdopos<br>
+        Langkah : <br>
+        1. Ketuk tombol "Tambah" yang ada didalam menu daftar barang <br>
+        2. Isi data barang berupa nama barang, harga barang,  dan jumlah stok barang <br>
+        3. Jika sudah selesai mengisi data barang, ketuk tombol "Simpan" untuk menyimpan data barang <br>
+        <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+
+
+    <string name="downloadqrcode">
+
+        <![CDATA[
+
+        <p>Untuk mengunduh QRcode untuk diletakkan di stiker produk <br>
+        Langkah : <br>
+        1. Buka menu "Daftar Barang" lalu ketuk tombol "QRcode" pada barang yang kita pilih <br>
+        2. Ketuk tombol "Download QRcode" untuk mengunduh QRcode <br>
+        3. QRcode yang diunduh dapat diletakkan pada stiker produk <br>
+        4. QRcode tersebut dapat di pindai menggunakan scanner QRcode di aplikasi untuk memasukkan data barang ke list transaksi <br>
+        5. Jika barang dihapus, maka QRcode juga akan terhapus  <br>
+        6. Jika aplikasi di uninstall, data  barang juga akan hilang termasuk data QRcode <br>
+        7. Jika data barang dimasukkan ulang sesuai data barang sebelum terhapus/dihapus, QRcode tetap akan berubah dan berbeda dengan QRcode sebelumnya <br><br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <string name="scanqrcode">
+
+        <![CDATA[
+
+        <p>Untuk menambahkan data barang pada aplikasi  <br>
+        Langkah : <br>
+        1. Terlebih dahulu sandingkan bluetooth perangkat android dan mesin pos kasir <br>
+        2. Arahkan QRcode pada stiker produk ke scanner QRcode di aplikasi herdopos <br>
+        3. Jika QRcode sesuai dengan data barang, maka akan muncul kotak pop up untuk mengisi jumlah barang yang dibeli <br>
+        4. Isi jumlah barang yang dibeli, kemudian ketuk tombol Oke <br>
+        5. Barang akan masuk ke list transaksi <br>
+        6. Ulangi langkah ke 3 dan 4 jika ingin menambahkan barang ke dalam list transaksi <br>
+        7. Jika sudah mengisi semua barang di kotak list transaksi, ketuk tombol "Selesaikan Transaksi" di bagian bawah kotak list transaksi <br>
+        8. Akan muncul kotak pop up untuk pilihan cetak struk atau tidak. Pastikan perangkat android dan mesin pos sudah terhubung melalui bluetooth <br>
+        9. Tunggu proses cetak struk selesai, data transaksi tersebut dapat dilihat di halaman riwayat <br>
+        <br>
+        </p>
+        ]]>
+
+    </string>
+
+
+
+
+
+
 </resources>

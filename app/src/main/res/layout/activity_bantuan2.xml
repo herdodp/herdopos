@@ -1,30 +1,372 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context=".bantuan">
 
-
     <LinearLayout
-        android:gravity="center_vertical"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical">
+        android:layout_height="wrap_content">
 
+
+
+        <!-- open Judul -->
         <TextView
+            android:layout_marginTop="30dp"
+            android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="ini halaman bantuan"
+            android:text="Panduan"
+            android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="30sp"
-            android:textAlignment="center"/>
+            android:textSize="25sp"/>
+        <!-- close judul -->
+
+
+
+
+
+        <!-- open Garis Pembatas -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_marginVertical="20dp" />
+        <!-- close garis pembatas -->
+
+
+
+
+
+
+        <!-- open Test Cetak Struk -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Test cetak struk"/>
+
+            <TextView
+                android:id="@+id/tescetakstruk"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tescetakstruk"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <!-- close tes cetak struk -->
+
+
+
+
+
+
+
+
+        <!--open pengaturan Nama dan Alamat -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Pengaturan nama dan alamat"/>
+
+            <TextView
+                android:id="@+id/pengaturan"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close pengaturan nama dan alamat -->
+
+
+
+
+
+        <!--open tombol manual -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Tombol Manual"/>
+
+            <TextView
+                android:id="@+id/tombolmanual"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tombolmanual"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close tombol manual -->
+
+
+
+
+
+
+
+
+        <!--open tombol clear -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Tombol Clear"/>
+
+            <TextView
+                android:id="@+id/tombolclear"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tombolclear"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close tombol clear -->
+
+
+
+
+
+
+
+        <!--open tombol daftar barang -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Tombol Daftar Barang"/>
+
+            <TextView
+                android:id="@+id/tomboldaftarbarang"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tomboldaftarbarang"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close tombol daftar barang -->
+
+
+
+
+
+
+
+
+        <!--open tombol riwayat -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Tombol Riwayat"/>
+
+            <TextView
+                android:id="@+id/tombolriwayat"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tombolriwayat"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close tombol riwayat -->
+
+
+
+
+
+
+
+        <!--open tambah barang -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Tambah Barang"/>
+
+            <TextView
+                android:id="@+id/tambahbarang"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tambahbarang"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close tambah barang -->
+
+
+
+
+
+
+
+
+
+
+
+        <!--  open download qrcode -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Download QRcode untuk ditempel di stiker produk"/>
+
+            <TextView
+                android:id="@+id/downloadqrcode"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/downloadqrcode"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close download qrcode -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!--open scan qrcode -->
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textAlignment="textStart"
+                android:text="Scan QRcode barang"/>
+
+            <TextView
+                android:id="@+id/scanqrcode"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/scanqrcode"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <!-- close scan qrcode -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

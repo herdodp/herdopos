@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/bantuan"
-        android:title="Bantuan"
+        android:title="Panduan penggunaan"
         tools:ignore="HardcodedText" />
 
     <item
