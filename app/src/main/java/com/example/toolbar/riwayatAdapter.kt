@@ -1,21 +1,16 @@
 package com.example.toolbar
 
 import android.content.Intent
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
-import java.text.NumberFormat
-import java.util.Locale
 
 class riwayatAdapter(
     private val riwayatList: List<riwayatlist>,
-    private val onDelete: (Int) -> Unit // Callback untuk penghapusan item
+    private val onDelete: (String) -> Unit // Callback untuk penghapusan item menggunakan tipe data String
 ) : RecyclerView.Adapter<riwayatAdapter.riwayatViewHolder>() {
 
     inner class riwayatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -37,16 +32,10 @@ class riwayatAdapter(
         holder.jamstruk.text = riwayatdb.jamstruk
         holder.tanggalstruk.text = riwayatdb.tanggalstruk
 
-        // Callback onDelete untuk menghapus item
-
-        /*
+        // Fungsi untuk menghapus item saat tombol delete diklik
         holder.btndelete.setOnClickListener {
-            onDelete(riwayatdb.nostruk) // Memanggil fungsi penghapusan
+            onDelete(riwayatdb.nostruk) // Memanggil fungsi penghapusan dengan kode struk
         }
-
-         */
-
-
 
         holder.btnview.setOnClickListener {
             val context = holder.itemView.context

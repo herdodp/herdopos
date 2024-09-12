@@ -57,6 +57,8 @@ class riwayattransaksi : AppCompatActivity() {
         })
     }
 
+
+
     private fun displayData() {
         riwayatList = databaseHelper.getAllDatariwayat()
 
