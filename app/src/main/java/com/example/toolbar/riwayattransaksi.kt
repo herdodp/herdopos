@@ -66,14 +66,14 @@ class riwayattransaksi : AppCompatActivity() {
         riwayatAdapter = riwayatAdapter(riwayatList) { id ->
             AlertDialog.Builder(this)
                 .setTitle("Hapus Barang")
-                .setMessage("Apakah Anda yakin ingin menghapus barang ini?")
+                .setMessage("Apakah Anda yakin ingin menghapus riwayat transaksi ini?")
                 .setPositiveButton("Ya") { _, _ ->
-                    val result = databaseHelper.deleteData(id)
+                    val result = databaseHelper.deleteDatariwayat(id)
                     if (result > 0) {
-                        Toast.makeText(this, "Data berhasil dihapus!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Data riwayat berhasil dihapus!", Toast.LENGTH_SHORT).show()
                         displayData() // Refresh data setelah penghapusan
                     } else {
-                        Toast.makeText(this, "Gagal menghapus data!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Gagal menghapus data riwayat!", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("Tidak", null)
@@ -85,27 +85,6 @@ class riwayattransaksi : AppCompatActivity() {
     }
 
     private fun filterData(query: String) {
-        val filteredList = riwayatList.filter {
-            it.nostruk.contains(query, ignoreCase = true) || it.jamstruk.contains(query, ignoreCase = true)
-        }
-
-        // Update adapter dengan data yang sudah difilter
-        riwayatAdapter = riwayatAdapter(filteredList) { id ->
-            AlertDialog.Builder(this)
-                .setTitle("Hapus Barang")
-                .setMessage("Apakah Anda yakin ingin menghapus barang ini?")
-                .setPositiveButton("Ya") { _, _ ->
-                    val result = databaseHelper.deleteData(id)
-                    if (result > 0) {
-                        Toast.makeText(this, "Data berhasil dihapus!", Toast.LENGTH_SHORT).show()
-                        displayData() // Refresh data setelah penghapusan
-                    } else {
-                        Toast.makeText(this, "Gagal menghapus data!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("Tidak", null)
-                .show()
-        }
         recyclerViewRiwayat.adapter = riwayatAdapter
     }
 

@@ -185,6 +185,7 @@ class MainActivity : AppCompatActivity() {
                     if (stok >= getjumlahbarang) {
                         val itemTotalHarga = getjumlahbarang * gethargabarang
                         val count = getjumlahbarang
+                        val hargaasli =  barang.harga
 
                         listbarang.add(getjumlahbarang)
                         totalHarga += itemTotalHarga
@@ -192,7 +193,8 @@ class MainActivity : AppCompatActivity() {
                         // Perbarui tampilan total harga
                         totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
-                        scanResults.add(ScanResult(getnamabarang, count.toString(), formatRupiah(itemTotalHarga.toDouble())))
+                        scanResults.add(ScanResult(getnamabarang, count.toString(), hargaasli.toString()
+                            ,formatRupiah(itemTotalHarga.toDouble())))
 
                         adapter.notifyDataSetChanged()
                     } else {
@@ -201,14 +203,6 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this@MainActivity, "Barang tidak ditemukan: $getnamabarang", Toast.LENGTH_SHORT).show()
                 }
-
-
-
-
-
-
-
-
 
 
 
@@ -246,6 +240,7 @@ class MainActivity : AppCompatActivity() {
         btntransaksi.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Complete Transaction")
+            builder.setCancelable(false)
             builder.setMessage("Selesaikan Transaksi ini ?")
             builder.setPositiveButton("Selesaikan"){_,_ ->
                 Toast.makeText(applicationContext, "Transaksi selesai", Toast.LENGTH_SHORT).show()
@@ -289,7 +284,8 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 builder.setNegativeButton("Cancel"){dialog,_->
-                    startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                    //startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                    dialog.dismiss()
                 }
                 builder.create()
                 builder.show()
@@ -562,13 +558,13 @@ class MainActivity : AppCompatActivity() {
               *** ${getnamatoko} ***
             ${getalamat}
             ---------------------------
-            Item    Qty    Price
+            Item   Qty  Price  Total
             ---------------------------
-            item 1   2  30.000  60.000
-            item 2   5  25.000  125.000
-            item 3   3  30.000  90.000
-            item 4   4  30.000  90.000
-            item 5   3  30.000  90.000
+            item 1  2   30.000  60.000
+            item 2  5   25.000  125.000
+            item 3  3   30.000  90.000
+            item 4  4   30.000  90.000
+            item 5  3   30.000  90.000
             ---------------------------
             Total               275.000
             ---------------------------
@@ -654,21 +650,25 @@ class MainActivity : AppCompatActivity() {
                     val builder = AlertDialog.Builder(this@MainActivity)
                     builder.setView(inflateitemcount)
                     builder.setTitle("Jumlah Item")
+                    builder.setCancelable(false)
                     builder.setPositiveButton("Ok"){_,_ ->
 
                         val itemcount = inflateitemcount.findViewById<EditText>(R.id.inputjumlah)
                         val jumlahitemcount = itemcount.text.toString().toInt()
                         val totalharga = jumlahitemcount*barang.harga
+                        val hargaasli = barang.harga
                         val count = jumlahitemcount
 
                         listbarang.add(count)
 
 
                         totalHarga += totalharga
+
+
                         // Perbarui tampilan total harga
                         totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
-                        scanResults.add(ScanResult(barang.nama, count.toString(),formatRupiah(totalharga)))
+                        scanResults.add(ScanResult(barang.nama, count.toString(),hargaasli.toString(),formatRupiah(totalharga)))
 
                         adapter.notifyDataSetChanged()
 
@@ -747,23 +747,26 @@ class MainActivity : AppCompatActivity() {
         strukBuilder.append("${getalamat}\n")
         strukBuilder.append("No. struk : ${no_struk}\n")
         strukBuilder.append("---------------------------\n")
-        strukBuilder.append("Item    Qty    Price\n")
+        strukBuilder.append("Item    Qty   Price   Total\n")
         strukBuilder.append("---------------------------\n")
 
         // Tambahkan item ke struk
-        // Gunakan indeks untuk mengakses elemen di listbarang sesuai urutan scanResults
         for ((index, scanResult) in scanResults.withIndex()) {
             val harga1 = scanResult.harga
-
-            // Pastikan indeks berada dalam rentang listbarang
+            val hargaasli = scanResult.hargaasli
             val qty = if (index < listbarang.size) listbarang[index] else 0
 
-            strukBuilder.append("${scanResult.text}   ${qty}   ${harga1}\n")
+            // Pastikan nama item memiliki panjang 10 karakter
+            val itemNama = scanResult.text.padEnd(10, ' ')
+            val qtyText = qty.toString().padEnd(5, ' ') // Panjang kolom Qty menjadi 5 karakter
+            val hargaText = harga1.padStart(6, ' ') // Panjang kolom Price menjadi 6 karakter
+
+            strukBuilder.append("${itemNama}${qtyText}${hargaasli}${hargaText}\n")
 
             val isUpdated = databasehelper.updateStokBarang(scanResult.text, qty)
             if (!isUpdated) {
                 Toast.makeText(this, "Gagal mengurangi stok barang: ${scanResult.text}", Toast.LENGTH_SHORT).show()
-                return // Jika gagal, batalkan proses transaksi
+                return
             }
         }
 
@@ -775,10 +778,9 @@ class MainActivity : AppCompatActivity() {
         strukBuilder.append("${Datenow}\n")
         strukBuilder.append("       Terima Kasih       \n\n")
 
-        // Dapatkan struk utuh setelah selesai menambah semua elemen
         val strukutuh = strukBuilder.toString()
 
-        // Menyimpan data struk ke database
+        // Simpan data struk ke database
         val result = databasehelper.insertDatariwayat(
             stringstruk = strukutuh,
             nostruk = no_struk,
@@ -793,15 +795,12 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, "Berhasil menyimpan data struk!", Toast.LENGTH_SHORT).show()
 
-        // Lanjutkan dengan Intent ke halaman riwayat
         val intent = Intent(this@MainActivity, riwayattransaksi::class.java)
         intent.putExtra("nostruk", no_struk)
         startActivity(intent)
 
-        // Tampilkan struk kasir di Logcat atau cetak ke printer
         Log.d("StrukKasir", strukutuh)
 
-        // Cetak struk jika diperlukan
         bluetoothDevice?.let { device ->
             val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
             lifecycleScope.launch(Dispatchers.IO) {
@@ -810,7 +809,6 @@ class MainActivity : AppCompatActivity() {
                     socket.connect()
                     val outputStream: OutputStream = socket.outputStream
 
-                    // Kirim data struk ke printer
                     sendPrintData(outputStream, strukutuh)
 
                     outputStream.close()
@@ -819,7 +817,7 @@ class MainActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         lifecycleScope.launch {
                             Toast.makeText(applicationContext, "Struk berhasil dicetak!", Toast.LENGTH_SHORT).show()
-                            delay(2000) // Delay selama 2 detik
+                            delay(2000)
                             startActivity(Intent(this@MainActivity, MainActivity::class.java))
                             Toast.makeText(applicationContext, "Pilih perangkat bluetooth dulu sebelum menyelesaikan transaksi", Toast.LENGTH_SHORT).show()
                             delay(1000)
@@ -837,6 +835,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Pilih perangkat Bluetooth terlebih dahulu", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
 
@@ -893,7 +892,7 @@ class MainActivity : AppCompatActivity() {
         val formatRupiah = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
         val rupiah = formatRupiah.format(amount)
         // Menambahkan spasi setelah "Rp"
-        return rupiah.replace("Rp", "Rp ")
+        return rupiah.replace("Rp", "")
     }
 
 
