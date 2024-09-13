@@ -24,12 +24,14 @@ class ScanResultAdapter(private val scanResults: List<com.example.toolbar.ScanRe
     class ScanResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textScanResult: TextView = itemView.findViewById(R.id.text_scan_result)
         private val qtyScanResult: TextView = itemView.findViewById(R.id.qty_scan_result)
+        private val hargaasliScanResult: TextView = itemView.findViewById(R.id.hargaasli_scan_result)
         private val hargaScanResult: TextView = itemView.findViewById(R.id.harga_scan_result)
 
         fun bind(scanResult: com.example.toolbar.ScanResult) {
             // Gunakan informasi dari ScanResult yang relevan
             textScanResult.text = scanResult.text
             qtyScanResult.text = scanResult.qty
+            hargaasliScanResult.text = scanResult.hargaasli
             hargaScanResult.text = scanResult.harga
         }
     }

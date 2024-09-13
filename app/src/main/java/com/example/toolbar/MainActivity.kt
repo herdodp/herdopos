@@ -78,28 +78,6 @@ class MainActivity : AppCompatActivity() {
     val Timenow = "${hour}:${minute}:${second}"
     val Datenow = "${day}/${month}/${year}"
 
-// Tampilkan hasil
-   // println("Waktu saat ini: $hour:$minute:$second")
-    //println("Tanggal saat ini: $day-$month-$year")
-
-    // Mendapatkan tanggal
-    /*
-    @SuppressLint("NewApi")
-    val date = currentDateTime.toLocalDate()
-    @SuppressLint("NewApi")
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    @SuppressLint("NewApi")
-    val Datenow = date.format(dateFormatter)
-
-    // Mendapatkan waktu
-    @SuppressLint("NewApi")
-    val time = currentDateTime.toLocalTime()
-    @SuppressLint("NewApi")
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-    @SuppressLint("NewApi")
-    val Timenow = time.format(timeFormatter)
-
-     */
 
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
@@ -159,7 +137,8 @@ class MainActivity : AppCompatActivity() {
         //button statistik
         val buttonstatistik = findViewById<Button>(R.id.btnstatistik)
         buttonstatistik.setOnClickListener {
-            startActivity(Intent(this@MainActivity, statistik::class.java))
+            //startActivity(Intent(this@MainActivity, statistik::class.java))
+            Toast.makeText(applicationContext, "Fitur belum tersedia", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -177,50 +156,65 @@ class MainActivity : AppCompatActivity() {
             builder.setView(inflatebuild)
             builder.setTitle("Masukkan Data Pembelian")
             builder.setCancelable(false)
-            builder.setPositiveButton("Tambah ke chart"){_,_->
+            builder.setPositiveButton("Tambah ke chart") { _, _ ->
 
                 val getnamabarang = namabarang.text.toString()
-                val getjumlahbarang = jumlahbarang.text.toString().toInt()
-                val gethargabarang = hargabarang.text.toString().toInt()
+                val getjumlahbarangString = jumlahbarang.text.toString()
+                val gethargabarangString = hargabarang.text.toString()
 
-                val databaseHelper = DatabaseHelper(this@MainActivity)
-                val barang = databaseHelper.getBarangBynamabarang(getnamabarang)
+                // Cek apakah semua input tidak kosong
+                if (getnamabarang.isNotEmpty() && getjumlahbarangString.isNotEmpty() && gethargabarangString.isNotEmpty()) {
+                    val getjumlahbarang = getjumlahbarangString.toIntOrNull() ?: 0
+                    val gethargabarang = gethargabarangString.toIntOrNull() ?: 0
 
-                if (barang != null) {
-                    val stok = barang.stokbarang
-                    if (stok >= getjumlahbarang) {
-                        val itemTotalHarga = getjumlahbarang * gethargabarang
-                        val count = getjumlahbarang
-                        val hargaasli =  barang.harga
+                    val databaseHelper = DatabaseHelper(this@MainActivity)
+                    val barang = databaseHelper.getBarangBynamabarang(getnamabarang)
 
-                        listbarang.add(getjumlahbarang)
-                        totalHarga += itemTotalHarga
+                    if (barang != null) {
+                        val stok = barang.stokbarang
+                        if (stok >= getjumlahbarang) {
+                            val itemTotalHarga = getjumlahbarang * gethargabarang
+                            val count = getjumlahbarang
+                            val hargaasli = barang.harga
 
-                        // Perbarui tampilan total harga
-                        totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
+                            listbarang.add(getjumlahbarang)
+                            totalHarga += itemTotalHarga
 
-                        scanResults.add(ScanResult(getnamabarang, count.toString(), hargaasli.toString()
-                            ,formatRupiah(itemTotalHarga.toDouble())))
+                            // Perbarui tampilan total harga
+                            totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
-                        adapter.notifyDataSetChanged()
+                            scanResults.add(
+                                ScanResult(
+                                    getnamabarang,
+                                    count.toString(),
+                                    hargaasli.toString(),
+                                    formatRupiah(itemTotalHarga.toDouble())
+                                )
+                            )
+
+                            adapter.notifyDataSetChanged()
+                        } else {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Stok tidak mencukupi untuk barang: $getnamabarang",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
-                        Toast.makeText(this@MainActivity, "Stok tidak mencukupi untuk barang: $getnamabarang", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "Barang tidak ditemukan: $getnamabarang", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this@MainActivity, "Barang tidak ditemukan: $getnamabarang", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Harap isi semua kolom", Toast.LENGTH_SHORT).show()
                 }
-
-
-
-
-
             }
-            builder.setNegativeButton("Batal"){ dialog,_->
+
+            builder.setNegativeButton("Batal") { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create()
             builder.show()
         }
+
 
 
 
@@ -717,8 +711,8 @@ class MainActivity : AppCompatActivity() {
 
 
     fun formatAngkaToK(amount: Double): String {
-        return if (amount >= 1000) {
-            val formatted = (amount / 1000).toString() + "K"
+        return if (amount >= 1000.00) {
+            val formatted = (amount / 1000.00).toString() + "K"
             formatted
         } else {
             amount.toString()
@@ -755,8 +749,8 @@ class MainActivity : AppCompatActivity() {
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
 
-            // Pastikan nama item memiliki panjang 10 karakter
-            val itemNama = scanResult.text.padEnd(8, ' ')
+
+            val itemNama = scanResult.text.take(6).padEnd(8, ' ') // Panjang maksimal 6 karakter
             val qtyText = qty.toString().padEnd(5, ' ') // Panjang kolom Qty menjadi 5 karakter
             val hargaText = harga1.padStart(6, ' ') // Panjang kolom Price menjadi 6 karakter
             val hargaaslitext = hargaasli.padStart(6, ' ')

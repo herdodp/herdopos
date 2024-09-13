@@ -1,11 +1,13 @@
 package com.example.toolbar
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 import java.text.NumberFormat
@@ -23,6 +25,7 @@ class BarangAdapter(
         val jumlahstoktextview : TextView= itemView.findViewById(R.id.stokbarang)
         val btnHapus: Button = itemView.findViewById(R.id.btn_hapus)
         val btnbarcode : Button = itemView.findViewById(R.id.btn_barocde)
+        val btnedit1 : Button = itemView.findViewById(R.id.btnedit)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BarangViewHolder {
@@ -51,6 +54,11 @@ class BarangAdapter(
             val intent = Intent(context, view_barcode::class.java)
             intent.putExtra("idbarcode", barang.idbarcode)
             context.startActivity(intent)
+        }
+
+        holder.btnedit1.setOnClickListener {
+            val context = holder.itemView.context
+            Toast.makeText(context, "Fitur edit barang belum tersedia", Toast.LENGTH_SHORT).show()
         }
 
     }

@@ -33,6 +33,20 @@
         android:paddingStart="8dp" />
 
     <TextView
+        android:id="@+id/hargaasli_scan_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:maxLength="10"
+        android:ellipsize="end"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp" />
+
+
+    <TextView
         android:id="@+id/harga_scan_result"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

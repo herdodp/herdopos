@@ -63,22 +63,30 @@ class daftarbarang : AppCompatActivity() {
                 .setPositiveButton("Simpan") { _, _ ->
                     val editTextNama: EditText = viewdaftar.findViewById(R.id.namabarang)
                     val editTextHarga: EditText = viewdaftar.findViewById(R.id.hargabarang)
+                    val jumlahstok: EditText = viewdaftar.findViewById(R.id.stokbarang)
                     val idbarcode = idalfanumerik()
-                    val jumlahstok : EditText = viewdaftar.findViewById(R.id.stokbarang)
 
                     val nama = editTextNama.text.toString()
-                    val harga = editTextHarga.text.toString().toDoubleOrNull()
-                    val barangstok = jumlahstok.text.toString().toInt()
+                    val hargaText = editTextHarga.text.toString()
+                    val stokText = jumlahstok.text.toString()
 
-                    if (nama.isNotEmpty() && harga != null && barangstok != null) {
-                        val result = databaseHelper.insertData(nama, harga, idbarcode, barangstok)
-                        if (result != -1L) {
-                            Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show()
-                            //displayData() // Refresh data setelah penyimpanan
-                            startActivity(Intent(this, daftarbarang::class.java))
-                            finish()
+                    // Cek apakah input tidak kosong
+                    if (nama.isNotEmpty() && hargaText.isNotEmpty() && stokText.isNotEmpty()) {
+                        val harga = hargaText.toDoubleOrNull()
+                        val barangstok = stokText.toIntOrNull()
+
+                        if (harga != null && barangstok != null) {
+                            val result = databaseHelper.insertData(nama, harga, idbarcode, barangstok)
+                            if (result != -1L) {
+                                Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show()
+                                // Refresh data setelah penyimpanan
+                                startActivity(Intent(this, daftarbarang::class.java))
+                                finish()
+                            } else {
+                                Toast.makeText(this, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show()
+                            }
                         } else {
-                            Toast.makeText(this, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Harga atau stok tidak valid!", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Toast.makeText(this, "Isi semua kolom dengan benar!", Toast.LENGTH_SHORT).show()
@@ -90,6 +98,7 @@ class daftarbarang : AppCompatActivity() {
                 .create()
                 .show()
         }
+
 
         // Inisiasi RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
