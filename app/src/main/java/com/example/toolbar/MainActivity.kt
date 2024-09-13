@@ -153,7 +153,13 @@ class MainActivity : AppCompatActivity() {
         val buttonriwayat = findViewById<Button>(R.id.btnriwayat)
         buttonriwayat.setOnClickListener {
             startActivity(Intent(this@MainActivity, riwayattransaksi::class.java))
-            finish()
+        }
+
+
+        //button statistik
+        val buttonstatistik = findViewById<Button>(R.id.btnstatistik)
+        buttonstatistik.setOnClickListener {
+            startActivity(Intent(this@MainActivity, statistik::class.java))
         }
 
 
@@ -260,26 +266,6 @@ class MainActivity : AppCompatActivity() {
 
                         }
 
-                    //val scannedData =
-                    //Toast.makeText(this@MainActivity, "Scanned QR Code: $scannedData", Toast.LENGTH_LONG).show()
-
-                    // Add scan result to list and update RecyclerView
-                    //scanResults.add(ScanResult(scannedData))
-                    //adapter.notifyDataSetChanged()
-
-                    //val databaseHelper = DatabaseHelper(this@MainActivity)
-                    //val barang = databaseHelper.getBarangByBarcode(scannedData)
-
-                    //menyimpan data di table riwayat
-                   // val result = databasehelper.insertDatariwayat(barang.nama, qtybarang, hargaasli, totalharga, jamriwayat, tanggalriwayat, nomorstruk)
-                    //if (result != -1L) {
-                     //Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show()
-                        //displayData() // Refresh data setelah penyimpanan
-                        //startActivity(Intent(this, daftarbarang::class.java))
-                        //finish()
-                    //} else {
-                       // Toast.makeText(this, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show()
-                   // }
 
 
                 }
@@ -308,6 +294,7 @@ class MainActivity : AppCompatActivity() {
         getalamat = prefsalamat?.getString("keyalamat", "default")
 
 
+        //
         recyclerView = findViewById(R.id.recyclerviewmain) // Pastikan ID ini sesuai dengan ID di layout XML Anda
         adapter = ScanResultAdapter(scanResults)
         recyclerView.adapter = adapter
@@ -420,7 +407,6 @@ class MainActivity : AppCompatActivity() {
 
             R.id.about -> {
                 startActivity(Intent(this@MainActivity, about::class.java))
-                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -668,7 +654,7 @@ class MainActivity : AppCompatActivity() {
                         // Perbarui tampilan total harga
                         totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
-                        scanResults.add(ScanResult(barang.nama, count.toString(),hargaasli.toString(),formatRupiah(totalharga)))
+                        scanResults.add(ScanResult(barang.nama, count.toString(),hargaasli.toString(),formatRupiahnonrp(totalharga)))
 
                         adapter.notifyDataSetChanged()
 
@@ -730,6 +716,19 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    fun formatAngkaToK(amount: Double): String {
+        return if (amount >= 1000) {
+            val formatted = (amount / 1000).toString() + "K"
+            formatted
+        } else {
+            amount.toString()
+        }
+    }
+
+
+
+
+
 
     @SuppressLint("MissingPermission")
     private fun selesaikanTransaksi() {
@@ -752,16 +751,17 @@ class MainActivity : AppCompatActivity() {
 
         // Tambahkan item ke struk
         for ((index, scanResult) in scanResults.withIndex()) {
-            val harga1 = scanResult.harga
-            val hargaasli = scanResult.hargaasli
+            val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
+            val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
 
             // Pastikan nama item memiliki panjang 10 karakter
-            val itemNama = scanResult.text.padEnd(10, ' ')
+            val itemNama = scanResult.text.padEnd(8, ' ')
             val qtyText = qty.toString().padEnd(5, ' ') // Panjang kolom Qty menjadi 5 karakter
             val hargaText = harga1.padStart(6, ' ') // Panjang kolom Price menjadi 6 karakter
+            val hargaaslitext = hargaasli.padStart(6, ' ')
 
-            strukBuilder.append("${itemNama}${qtyText}${hargaasli}${hargaText}\n")
+            strukBuilder.append("${itemNama}${qtyText}${hargaaslitext}${hargaText}\n")
 
             val isUpdated = databasehelper.updateStokBarang(scanResult.text, qty)
             if (!isUpdated) {
@@ -772,7 +772,7 @@ class MainActivity : AppCompatActivity() {
 
         // Tambahkan informasi total dan waktu ke struk
         strukBuilder.append("---------------------------\n")
-        strukBuilder.append("Total               ${formatRupiahnonrp(totalHarga)}\n")
+        strukBuilder.append("Total               ${formatAngkaToK(totalHarga)}\n") // Menggunakan fungsi formatAngkaToK
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("${Timenow}\n")
         strukBuilder.append("${Datenow}\n")
@@ -840,6 +840,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
     private fun randomnostruk(): String {
         val alfanumerik = "0123456789abcdefghijklmnopqrstuvwxyz"
         return (1..10).map { alfanumerik.random() }.joinToString("")
@@ -876,6 +877,8 @@ class MainActivity : AppCompatActivity() {
 
             startActivity(Intent(this@MainActivity, MainActivity::class.java))
             finish()
+
+            Toast.makeText(applicationContext, "Hubungkan ulang perangkat bluetooth", Toast.LENGTH_SHORT).show()
         }
         hapusitem.setNegativeButton("Batal"){dialog ,_->
             dialog.dismiss()
@@ -891,8 +894,9 @@ class MainActivity : AppCompatActivity() {
     fun formatRupiah(amount: Double): String {
         val formatRupiah = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
         val rupiah = formatRupiah.format(amount)
-        // Menambahkan spasi setelah "Rp"
-        return rupiah.replace("Rp", "")
+
+        // Menghapus "Rp" dan menghilangkan ",00" di akhir jika ada
+        return rupiah.replace("Rp", "").replace(",00", "").trim()
     }
 
 
@@ -900,9 +904,11 @@ class MainActivity : AppCompatActivity() {
     fun formatRupiahnonrp(amount: Double): String {
         val formatRupiah = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
         val formattedAmount = formatRupiah.format(amount)
-        // Menghapus "Rp" dari hasil format
-        return formattedAmount.replace("Rp", "").trim()
+
+        // Menghapus "Rp" dan menghilangkan ",00" di akhir jika ada
+        return formattedAmount.replace("Rp", "").replace(",00", "").trim()
     }
+
 
 
     private fun removeRpPrefix(amount: String): String {

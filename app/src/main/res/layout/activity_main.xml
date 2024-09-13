@@ -134,6 +134,8 @@
 
     <!-- open tombol menu -->
     <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:id="@+id/linearLayoutTombolMenu"
         android:layout_width="0dp"
@@ -146,9 +148,9 @@
 
         <Button
             android:id="@+id/daftarbarang"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
-            android:text="Daftar Barang"
+            android:text="Barang"
             android:background="@drawable/round_button"
             android:textColor="@color/white"
             android:textSize="10sp"
@@ -156,7 +158,7 @@
 
         <Button
             android:id="@+id/btnriwayat"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
             android:text="Riwayat"
             android:background="@drawable/round_button"
@@ -164,6 +166,18 @@
             android:textSize="10sp"
             android:textStyle="bold"
             android:layout_marginLeft="10dp"/>
+
+        <Button
+            android:id="@+id/btnstatistik"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:text="Statistik"
+            android:background="@drawable/round_button"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"/>
+
     </LinearLayout>
     <!-- close tombol menu -->
 
@@ -191,11 +205,20 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="80dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Qty"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price"
             android:textSize="20dp"
             android:textStyle="bold"/>
 
@@ -204,7 +227,7 @@
             android:layout_marginRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Price"
+            android:text="Total"
             android:textSize="20dp"
             android:textStyle="bold"/>
 

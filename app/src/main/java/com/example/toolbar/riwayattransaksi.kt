@@ -92,7 +92,7 @@ class riwayattransaksi : AppCompatActivity() {
     @SuppressLint("MissingSuperCall")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        startActivity(Intent(this@riwayattransaksi, MainActivity::class.java))
+        //startActivity(Intent(this@riwayattransaksi, MainActivity::class.java))
         finish()
         //super.onBackPressed()
     }

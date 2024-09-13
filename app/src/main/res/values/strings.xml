@@ -27,7 +27,6 @@
     </string>
 
 
-
     <string name="tescetakstruk">
 
         <![CDATA[
@@ -48,7 +47,6 @@
     </string>
 
 
-
     <string name="pengaturan">
 
         <![CDATA[
@@ -63,8 +61,6 @@
         ]]>
 
     </string>
-
-
 
 
     <string name="tombolmanual">
@@ -85,12 +81,6 @@
     </string>
 
 
-
-
-
-
-
-
     <string name="tombolclear">
 
         <![CDATA[
@@ -104,11 +94,6 @@
         ]]>
 
     </string>
-
-
-
-
-
 
 
     <string name="tomboldaftarbarang">
@@ -130,14 +115,6 @@
     </string>
 
 
-
-
-
-
-
-
-
-
     <string name="tombolriwayat">
 
         <![CDATA[
@@ -154,13 +131,6 @@
     </string>
 
 
-
-
-
-
-
-
-
     <string name="tambahbarang">
 
         <![CDATA[
@@ -175,10 +145,6 @@
         ]]>
 
     </string>
-
-
-
-
 
 
     <string name="downloadqrcode">
@@ -198,20 +164,6 @@
         ]]>
 
     </string>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <string name="scanqrcode">
@@ -234,10 +186,6 @@
         ]]>
 
     </string>
-
-
-
-
 
 
 </resources>
