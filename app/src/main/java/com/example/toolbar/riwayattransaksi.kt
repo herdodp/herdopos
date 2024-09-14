@@ -85,7 +85,12 @@ class riwayattransaksi : AppCompatActivity() {
     }
 
     private fun filterData(query: String) {
-        recyclerViewRiwayat.adapter = riwayatAdapter
+        val filteredList = riwayatList.filter { riwayat ->
+            riwayat.nostruk.contains(query, ignoreCase = true) ||
+                    riwayat.jamstruk.contains(query, ignoreCase = true) ||
+                    riwayat.tanggalstruk.contains(query, ignoreCase = true)
+        }
+        riwayatAdapter.updateData(filteredList) // Memperbarui adapter dengan data yang difilter
     }
 
 

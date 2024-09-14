@@ -46,11 +46,6 @@ class daftarbarang : AppCompatActivity() {
             insets
         }
 
-       // val toolbar2: Toolbar = findViewById(R.id.toolbar1)
-        //setSupportActionBar(toolbar2)
-
-        //supportActionBar?.title = "Daftar barang"
-
         val btntambahbarang = findViewById<Button>(R.id.buttonaddbarang)
         btntambahbarang.setOnClickListener {
             val inflatedaftar = LayoutInflater.from(this)
@@ -70,7 +65,6 @@ class daftarbarang : AppCompatActivity() {
                     val hargaText = editTextHarga.text.toString()
                     val stokText = jumlahstok.text.toString()
 
-                    // Cek apakah input tidak kosong
                     if (nama.isNotEmpty() && hargaText.isNotEmpty() && stokText.isNotEmpty()) {
                         val harga = hargaText.toDoubleOrNull()
                         val barangstok = stokText.toIntOrNull()
@@ -80,8 +74,7 @@ class daftarbarang : AppCompatActivity() {
                             if (result != -1L) {
                                 Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show()
                                 // Refresh data setelah penyimpanan
-                                startActivity(Intent(this, daftarbarang::class.java))
-                                finish()
+                                displayData()
                             } else {
                                 Toast.makeText(this, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show()
                             }
@@ -92,28 +85,20 @@ class daftarbarang : AppCompatActivity() {
                         Toast.makeText(this, "Isi semua kolom dengan benar!", Toast.LENGTH_SHORT).show()
                     }
                 }
-                .setNegativeButton("Batal") { dialog, _ ->
-                    dialog.dismiss()
-                }
+                .setNegativeButton("Batal") { dialog, _ -> dialog.dismiss() }
                 .create()
                 .show()
         }
 
-
-        // Inisiasi RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
-
-        // Inisiasi DatabaseHelper
         databaseHelper = DatabaseHelper(this)
 
         val totalBarang = databaseHelper.getTotalJumlahBarang()
         val jumlahbarang = findViewById<TextView>(R.id.jumlahbarang)
         jumlahbarang.text = totalBarang.toString()
 
-        // Tampilkan data
         displayData()
 
-        // Inisialisasi dan setel SearchView
         val searchView: SearchView = findViewById(R.id.searchView)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -133,16 +118,14 @@ class daftarbarang : AppCompatActivity() {
         return true
     }
 
-
-
     private fun idalfanumerik(): String {
         val alfanumerik = "0123456789abcdefghijklmnopqrstuvwxyz"
         return (1..10).map { alfanumerik.random() }.joinToString("")
     }
 
-    private fun displayData() {
+    fun displayData() {
         barangList = databaseHelper.getAllData()
-        barangAdapter = BarangAdapter(barangList) { id ->
+        barangAdapter = BarangAdapter(barangList, { id ->
             AlertDialog.Builder(this)
                 .setTitle("Hapus Barang")
                 .setMessage("Apakah Anda yakin ingin menghapus barang ini?")
@@ -150,16 +133,14 @@ class daftarbarang : AppCompatActivity() {
                     val result = databaseHelper.deleteData(id)
                     if (result > 0) {
                         Toast.makeText(this, "Data berhasil dihapus!", Toast.LENGTH_SHORT).show()
-                        //displayData() // Refresh data setelah penghapusan
-                        startActivity(Intent(this, daftarbarang::class.java))
-                        finish()
+                        displayData() // Refresh data setelah penghapusan
                     } else {
                         Toast.makeText(this, "Gagal menghapus data!", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("Tidak", null)
                 .show()
-        }
+        }, this) // Pass activity as argument
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = barangAdapter
     }
@@ -168,7 +149,7 @@ class daftarbarang : AppCompatActivity() {
         val filteredList = barangList.filter {
             it.nama.contains(query, ignoreCase = true) || it.idbarcode.contains(query, ignoreCase = true)
         }
-        barangAdapter = BarangAdapter(filteredList) { id ->
+        barangAdapter = BarangAdapter(filteredList, { id ->
             AlertDialog.Builder(this)
                 .setTitle("Hapus Barang")
                 .setMessage("Apakah Anda yakin ingin menghapus barang ini?")
@@ -176,16 +157,14 @@ class daftarbarang : AppCompatActivity() {
                     val result = databaseHelper.deleteData(id)
                     if (result > 0) {
                         Toast.makeText(this, "Data berhasil dihapus!", Toast.LENGTH_SHORT).show()
-                        //displayData() // Refresh data setelah penghapusan
-                        startActivity(Intent(this,  daftarbarang::class.java))
-                        finish()
+                        displayData() // Refresh data setelah penghapusan
                     } else {
                         Toast.makeText(this, "Gagal menghapus data!", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("Tidak", null)
                 .show()
-        }
+        }, this) // Pass activity as argument
         recyclerView.adapter = barangAdapter
     }
 }

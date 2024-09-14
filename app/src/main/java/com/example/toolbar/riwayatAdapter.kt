@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class riwayatAdapter(
-    private val riwayatList: List<riwayatlist>,
-    private val onDelete: (String) -> Unit // Callback untuk penghapusan item menggunakan tipe data String
+    private var riwayatList: List<riwayatlist>, // Jadikan 'var' agar dapat diperbarui
+    private val onDelete: (String) -> Unit
 ) : RecyclerView.Adapter<riwayatAdapter.riwayatViewHolder>() {
 
     inner class riwayatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -32,7 +32,6 @@ class riwayatAdapter(
         holder.jamstruk.text = riwayatdb.jamstruk
         holder.tanggalstruk.text = riwayatdb.tanggalstruk
 
-        // Fungsi untuk menghapus item saat tombol delete diklik
         holder.btndelete.setOnClickListener {
             onDelete(riwayatdb.nostruk) // Memanggil fungsi penghapusan dengan kode struk
         }
@@ -46,4 +45,10 @@ class riwayatAdapter(
     }
 
     override fun getItemCount(): Int = riwayatList.size
+
+    // Fungsi untuk memperbarui data riwayat
+    fun updateData(newList: List<riwayatlist>) {
+        riwayatList = newList
+        notifyDataSetChanged() // Memperbarui tampilan setelah data diperbarui
+    }
 }

@@ -13,14 +13,34 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Nama barang"
-            android:id="@+id/namabarang"
-            android:padding="10dp"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Nama barang"
+                android:id="@+id/namabarang"
+                android:padding="10dp"/>
+
+            <TextView
+                android:textSize="11sp"
+                android:layout_marginLeft="10dp"
+                android:textColor="#DF0A0A"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nama barang harus sesuai di daftar barang" />
+
+        </LinearLayout>
+
+
+
+
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -52,6 +72,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rp "
@@ -59,15 +80,33 @@
                 android:textColor="@color/black"
                 android:textSize="20dp"/>
 
-            <EditText
-                android:layout_marginLeft="10dp"
-                android:inputType="number"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:hint="Harga barang"
-                android:id="@+id/hargabarang"
-                android:padding="10dp"
-                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:layout_marginLeft="10dp"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Harga barang"
+                    android:id="@+id/hargabarang"
+                    android:padding="10dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:textSize="11sp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#21AC02"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Harga diperbolehkan berbeda dengan di daftar barang" />
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

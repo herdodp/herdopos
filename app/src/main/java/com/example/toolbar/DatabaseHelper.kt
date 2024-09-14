@@ -186,6 +186,29 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
 
+
+
+    // Method untuk memperbarui stok
+    fun updateStok(id: Int, tambahanStok: Int): Boolean {
+        val db = this.writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_STOK, tambahanStok)
+        }
+        val result = db.update(TABLE_NAME, contentValues, "$COLUMN_ID = ?", arrayOf(id.toString()))
+        return result > 0
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     // ============================================== CLOSE DATABASE BARANG =========================================
 
 

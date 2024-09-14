@@ -241,9 +241,17 @@ class MainActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Complete Transaction")
             builder.setCancelable(false)
-            builder.setMessage("Selesaikan Transaksi ini ?")
+            val pesan = """
+                    Selesaikan transaksi ini ?
+                    
+                    Note:
+                    - hubungkan ulang perangkat bluetooth setelah proses transaksi selesai
+                    
+                   
+                """.trimIndent()
+            builder.setMessage(pesan)
             builder.setPositiveButton("Selesaikan"){_,_ ->
-                Toast.makeText(applicationContext, "Transaksi selesai", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "Transaksi selesai", Toast.LENGTH_SHORT).show()
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage("Print struk transaksi ini ?")
                 builder.setPositiveButton("Print"){_,_->
@@ -263,12 +271,17 @@ class MainActivity : AppCompatActivity() {
 
 
                 }
-                builder.setNegativeButton("Cancel"){dialog,_->
+                builder.setNegativeButton("Tidak"){dialog,_->
                     //startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                    //dialog.dismiss()
+                    selesaikanTransaksiTanpaCetakStruk()
+                }
+                builder.setNeutralButton("Batalkan proses"){ dialog,_->
                     dialog.dismiss()
                 }
                 builder.create()
                 builder.show()
+
 
             }
             builder.setNegativeButton("Batal"){dialog, _->
@@ -317,11 +330,20 @@ class MainActivity : AppCompatActivity() {
         layoutParams.height = dpToPx(100) // Convert dp to px
         barcodeView.layoutParams = layoutParams
 
+
+
+
+
         // Button to open Daftar Barang activity
         val daftarbarang1 = findViewById<Button>(R.id.daftarbarang)
         daftarbarang1.setOnClickListener {
             startActivity(Intent(this, daftarbarang::class.java))
         }
+
+
+
+
+
 
         // Toolbar setup
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -531,12 +553,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
+
     private fun printReceipt(outputStream: OutputStream) {
         val receipt = """
             
             
               *** ${getnamatoko} ***
             ${getalamat}
+            Id struk : wffvdsdef
             ---------------------------
             Item   Qty  Price  Total
             ---------------------------
@@ -571,6 +598,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
     // Handle runtime permission result
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -581,6 +610,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
+
+
+
+
+
+
+
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
@@ -590,6 +628,13 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         barcodeView.pause()
     }
+
+
+
+
+
+
+
 
 
 
@@ -710,6 +755,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
+
     fun formatAngkaToK(amount: Double): String {
         return if (amount >= 1000.00) {
             val formatted = (amount / 1000.00).toString() + "K"
@@ -718,9 +769,6 @@ class MainActivity : AppCompatActivity() {
             amount.toString()
         }
     }
-
-
-
 
 
 
@@ -738,7 +786,7 @@ class MainActivity : AppCompatActivity() {
         // Format struk kasir
         strukBuilder.append("\n\n*** ${getnamatoko} ***\n")
         strukBuilder.append("${getalamat}\n")
-        strukBuilder.append("No. struk : ${no_struk}\n")
+        strukBuilder.append("Id struk : ${no_struk}\n")
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("Item    Qty   Price   Total\n")
         strukBuilder.append("---------------------------\n")
@@ -789,9 +837,13 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, "Berhasil menyimpan data struk!", Toast.LENGTH_SHORT).show()
 
+        /*
         val intent = Intent(this@MainActivity, riwayattransaksi::class.java)
         intent.putExtra("nostruk", no_struk)
         startActivity(intent)
+        finish()
+         */
+
 
         Log.d("StrukKasir", strukutuh)
 
@@ -835,10 +887,99 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+    private fun selesaikanTransaksiTanpaCetakStruk() {
+        // Buat format struk kasir dengan item dari RecyclerView
+        val strukBuilder = StringBuilder()
+
+        val totalHargaText = formatRupiahnonrp(totalHarga)
+        val totalHargaDouble = parseToDouble(totalHargaText)
+
+        val databasehelper = DatabaseHelper(this@MainActivity)
+        val no_struk = randomnostruk()
+
+        // Format struk kasir
+        strukBuilder.append("\n\n*** ${getnamatoko} ***\n")
+        strukBuilder.append("${getalamat}\n")
+        strukBuilder.append("Id struk : ${no_struk}\n")
+        strukBuilder.append("---------------------------\n")
+        strukBuilder.append("Item    Qty   Price   Total\n")
+        strukBuilder.append("---------------------------\n")
+
+        // Tambahkan item ke struk
+        for ((index, scanResult) in scanResults.withIndex()) {
+            val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
+            val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
+            val qty = if (index < listbarang.size) listbarang[index] else 0
+
+            val itemNama = scanResult.text.take(6).padEnd(8, ' ') // Panjang maksimal 6 karakter
+            val qtyText = qty.toString().padEnd(5, ' ') // Panjang kolom Qty menjadi 5 karakter
+            val hargaText = harga1.padStart(6, ' ') // Panjang kolom Price menjadi 6 karakter
+            val hargaaslitext = hargaasli.padStart(6, ' ')
+
+            strukBuilder.append("${itemNama}${qtyText}${hargaaslitext}${hargaText}\n")
+
+            val isUpdated = databasehelper.updateStokBarang(scanResult.text, qty)
+            if (!isUpdated) {
+                Toast.makeText(this, "Gagal mengurangi stok barang: ${scanResult.text}", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+
+        // Tambahkan informasi total dan waktu ke struk
+        strukBuilder.append("---------------------------\n")
+        strukBuilder.append("Total               ${formatAngkaToK(totalHarga)}\n") // Menggunakan fungsi formatAngkaToK
+        strukBuilder.append("---------------------------\n")
+        strukBuilder.append("${Timenow}\n")
+        strukBuilder.append("${Datenow}\n")
+        strukBuilder.append("       Terima Kasih       \n\n")
+
+        val strukutuh = strukBuilder.toString()
+
+        // Simpan data struk ke database
+        val result = databasehelper.insertDatariwayat(
+            stringstruk = strukutuh,
+            nostruk = no_struk,
+            jamstruk = Timenow,
+            tanggaltruk = Datenow
+        )
+
+        if (result == -1L) {
+            Toast.makeText(this, "Gagal menyimpan data struk!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Toast.makeText(this, "Berhasil menyimpan data struk!", Toast.LENGTH_SHORT).show()
+
+
+        /*
+        val intent = Intent(this@MainActivity, riwayattransaksi::class.java)
+        intent.putExtra("nostruk", no_struk)
+        startActivity(intent)
+        finish()
+         */
+
+        Log.d("StrukKasir", strukutuh)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     private fun randomnostruk(): String {
         val alfanumerik = "0123456789abcdefghijklmnopqrstuvwxyz"
         return (1..10).map { alfanumerik.random() }.joinToString("")
     }
+
+
+
 
 
 
@@ -858,29 +999,61 @@ class MainActivity : AppCompatActivity() {
         return (dp * density).toInt()
     }
 
-    private fun cleariteminput(){
+
+
+
+
+
+
+
+
+
+    private fun cleariteminput() {
         val hapusitem = AlertDialog.Builder(this)
         hapusitem.setTitle("Hapus Item")
-        hapusitem.setMessage("Bersihkan semua item input ?")
-        hapusitem.setPositiveButton("Bersihkan"){_,_->
+
+        // Gabungkan semua pesan menjadi satu string
+        val pesan = """
+        Bersihkan semua item input?
+        
+        Note:
+        - Hubungkan ulang perangkat bluetooth
+     
+    """.trimIndent()
+
+        hapusitem.setMessage(pesan)
+
+        hapusitem.setPositiveButton("Bersihkan") { _, _ ->
+            // Bersihkan item yang ada
             scanResults.clear()
             adapter.notifyDataSetChanged()
 
+            // Setel ulang total harga
             totalHarga = 0.0
-            totalHargaTextView.text = "$totalHarga"
+            totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
+            // Muat ulang aktivitas
             startActivity(Intent(this@MainActivity, MainActivity::class.java))
             finish()
 
             Toast.makeText(applicationContext, "Hubungkan ulang perangkat bluetooth", Toast.LENGTH_SHORT).show()
         }
-        hapusitem.setNegativeButton("Batal"){dialog ,_->
+
+        hapusitem.setNegativeButton("Batal") { dialog, _ ->
             dialog.dismiss()
         }
+
         hapusitem.create()
         hapusitem.show()
-
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -904,7 +1077,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun removeRpPrefix(amount: String): String {
         return amount.replace("Rp ", "").replace(",", "").trim()
     }
@@ -916,6 +1088,14 @@ class MainActivity : AppCompatActivity() {
             0.0 // Mengembalikan nilai default jika parsing gagal
         }
     }
+
+
+
+
+
+
+
+
 
 
     @SuppressLint("MissingSuperCall")
