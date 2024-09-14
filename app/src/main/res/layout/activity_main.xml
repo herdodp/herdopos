@@ -19,7 +19,12 @@
         app:layout_constraintRight_toRightOf="parent" />
     <!-- close toolbar -->
 
-    <!-- open total Pemasukkan -->
+
+
+
+
+
+    <!-- open total transaksi -->
     <LinearLayout
         android:id="@+id/totalPemasukkanLayout"
         android:layout_width="0dp"
@@ -48,7 +53,12 @@
             android:textStyle="bold"
             android:textSize="30sp"/>
     </LinearLayout>
-    <!-- close total pemasukkan -->
+    <!-- close total transaksi -->
+
+
+
+
+
 
     <!-- open garis -->
     <View
@@ -88,7 +98,7 @@
                 android:id="@+id/addmanualitembtn"
                 android:layout_width="50dp"
                 android:layout_height="45dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/baseline_add_24" />
 
             <TextView
@@ -100,10 +110,29 @@
                 android:textStyle="bold"/>
         </LinearLayout>
 
-        <com.journeyapps.barcodescanner.DecoratedBarcodeView
-            android:id="@+id/barcode_scanner"
-            android:layout_width="180dp"
-            android:layout_height="100dp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="5dp"
+                android:textAlignment="center"
+                android:textSize="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Scan QRcode produk dibawah"/>
+
+            <com.journeyapps.barcodescanner.DecoratedBarcodeView
+                android:id="@+id/barcode_scanner"
+                android:layout_width="180dp"
+                android:layout_height="100dp"/>
+
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -117,7 +146,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/baseline_delete_24"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="30dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

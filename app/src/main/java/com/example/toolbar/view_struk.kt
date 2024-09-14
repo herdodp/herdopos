@@ -4,6 +4,7 @@ import DatabaseHelper
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -24,15 +25,21 @@ class view_struk : AppCompatActivity() {
             insets
         }
 
+        // Mengambil kode struk dari Intent
         val getviewstruk = intent.getStringExtra("viewstruk")
 
+        // Mendapatkan data struk dari database
         val databasehelper = DatabaseHelper(this@view_struk)
-        val stringstruk = databasehelper.gettransaksiBykodestruk(getviewstruk.toString())
+        val riwayatStruk = databasehelper.gettransaksiBykodestruk(getviewstruk.toString())
 
-        val viewstruk1 = findViewById<TextView>(R.id.viewstruk)
-        viewstruk1.text = stringstruk.toString()
-
-
+        // Jika data struk ditemukan, tampilkan di TextView
+        if (riwayatStruk != null) {
+            // Menampilkan hanya stringstrukdb di TextView
+            val viewstruk1 = findViewById<TextView>(R.id.viewstruk)
+            viewstruk1.text = riwayatStruk.stringstrukdb
+        } else {
+            Toast.makeText(this, "Struk tidak ditemukan", Toast.LENGTH_SHORT).show()
+        }
 
 
 
