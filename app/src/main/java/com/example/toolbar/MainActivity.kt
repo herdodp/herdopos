@@ -18,6 +18,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 //import android.net.wifi.ScanResult
 import android.os.Build
@@ -111,7 +112,12 @@ class MainActivity : AppCompatActivity() {
     //list barang
     private var listbarang: MutableList<Int> = mutableListOf()
 
-    //private var count : Int = 0
+    private var totaluangkotor : Int = 0
+    private var totaluangmodal : Int = 0
+
+
+    private lateinit var sharepref : SharedPreferences
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -134,11 +140,28 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
+        //total uang kotor
+
+        sharepref = getSharedPreferences("uangkotor", Context.MODE_PRIVATE)
+        val shareprefvalue = sharepref.getString("uangkotor", "failed")
+
+        if(shareprefvalue?.isEmpty() == true || shareprefvalue == null){
+            val editoruangkotor = sharepref.edit()
+            editoruangkotor.putString("uangkotor", totaluangkotor.toString())
+        }
+
+
         //button statistik
         val buttonstatistik = findViewById<Button>(R.id.btnstatistik)
         buttonstatistik.setOnClickListener {
-            //startActivity(Intent(this@MainActivity, statistik::class.java))
-            Toast.makeText(applicationContext, "Fitur belum tersedia", Toast.LENGTH_SHORT).show()
+            val getuangkotor = sharepref.getString("uangkotor", "failed")
+            val intent = Intent(this@MainActivity, statistik::class.java)
+            intent.putExtra("uangkotor", getuangkotor)
+            startActivity(intent)
+
+
+
         }
 
 
@@ -822,6 +845,16 @@ class MainActivity : AppCompatActivity() {
 
         val strukutuh = strukBuilder.toString()
 
+
+        // totalkan pendapatan
+        val gettotaluangkotor = sharepref.getString("uangkotor", "default")
+        val totalpendapatan = gettotaluangkotor?.toInt()?.plus((totalHarga.toInt()))
+
+
+        val editoruangkotor = sharepref.edit()
+        editoruangkotor.putString("uangkotor", totalpendapatan.toString())
+        editoruangkotor.apply()
+
         // Simpan data struk ke database
         val result = databasehelper.insertDatariwayat(
             stringstruk = strukutuh,
@@ -936,6 +969,16 @@ class MainActivity : AppCompatActivity() {
 
         val strukutuh = strukBuilder.toString()
 
+
+        // totalkan pendapatan
+        val gettotaluangkotor = sharepref.getString("uangkotor", "default")
+        val totalpendapatan = gettotaluangkotor?.toInt()?.plus((totalHarga.toInt()))
+
+
+        val editoruangkotor = sharepref.edit()
+        editoruangkotor.putString("uangkotor", totalpendapatan.toString())
+        editoruangkotor.apply()
+
         // Simpan data struk ke database
         val result = databasehelper.insertDatariwayat(
             stringstruk = strukutuh,
@@ -958,6 +1001,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
          */
+
+        startActivity(Intent(this@MainActivity,  MainActivity::class.java))
 
         Log.d("StrukKasir", strukutuh)
     }

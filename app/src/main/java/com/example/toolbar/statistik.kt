@@ -2,13 +2,17 @@ package com.example.toolbar
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.text.NumberFormat
+import java.util.Locale
 
 @Suppress("DEPRECATION")
 class statistik : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,6 +26,10 @@ class statistik : AppCompatActivity() {
         }
 
 
+        val getuangkotor = intent.getStringExtra("uangkotor")
+
+        val viewuangkotor = findViewById<TextView>(R.id.uangkotor)
+        viewuangkotor.text = formatRupiahnonrp(getuangkotor?.toInt()!!.toDouble())
 
 
 
@@ -39,7 +47,14 @@ class statistik : AppCompatActivity() {
 
 
 
+    }
 
+    fun formatRupiahnonrp(amount: Double): String {
+        val formatRupiah = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+        val formattedAmount = formatRupiah.format(amount)
+
+        // Menghapus "Rp" dan menghilangkan ",00" di akhir jika ada
+        return formattedAmount.replace("Rp", "").replace(",00", "").trim()
     }
 
 
