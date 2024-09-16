@@ -26,7 +26,7 @@ class splashscreen : AppCompatActivity() {
 
         //handle splashscreen
 
-        val splash =  3000L
+        val splash =  1000L
 
         Handler().postDelayed({
          startActivity(Intent(this, MainActivity::class.java))

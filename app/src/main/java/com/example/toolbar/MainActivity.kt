@@ -113,10 +113,11 @@ class MainActivity : AppCompatActivity() {
     private var listbarang: MutableList<Int> = mutableListOf()
 
     private var totaluangkotor : Int = 0
-    private var totaluangmodal : Int = 0
+    private var totaluangkembalian : Int = 0
 
 
     private lateinit var sharepref : SharedPreferences
+    private lateinit var kembalianpref : SharedPreferences
 
 
 
@@ -133,6 +134,64 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
+
+
+
+        // Fungsi untuk menampilkan dialog input kembalian
+        fun showInputKembalianDialog() {
+            // LayoutInflater untuk membuat view baru
+            val inflatekembalian = LayoutInflater.from(this).inflate(R.layout.input_kembalian, null)
+            val initkembalian = inflatekembalian.findViewById<EditText>(R.id.uangkembalian)
+
+            val builder = AlertDialog.Builder(this)
+            builder.setView(inflatekembalian)
+            builder.setCancelable(false)
+            builder.setPositiveButton("Okay") { _, _ ->
+
+                val getuangkembalian = initkembalian.text.toString()
+                val payback = (getuangkembalian.toIntOrNull() ?: 0) - totalHarga
+
+                // Format pesan untuk uang kembalian
+                val pesan = """
+            
+            Total pembelian  : Rp ${formatRupiah(totalHarga)}
+            
+            uang kostumer    : Rp ${formatRupiah(getuangkembalian.toIntOrNull()?.toDouble() ?: 0.0)}
+            
+            Uang kembalian   : Rp ${formatRupiah(payback.toDouble())}
+            
+        """.trimIndent()
+
+                // Tampilkan dialog uang kembalian
+                showUangKembalianDialog(pesan)
+            }
+            builder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.show()
+        }
+
+        // Fungsi untuk menampilkan dialog uang kembalian
+
+
+// Menambahkan listener pada button kembalian
+        val buttonkembalian = findViewById<ImageButton>(R.id.btnkembalian)
+        buttonkembalian.setOnClickListener {
+            if (totalHarga == null || totalHarga.toInt() == 0) {
+                val buildkosong = AlertDialog.Builder(this)
+                buildkosong.setMessage("Tidak ada transaksi")
+                buildkosong.setCancelable(true)
+                buildkosong.show()
+            } else {
+                showInputKembalianDialog()
+            }
+        }
+
+
+
+
+
         // button riwayat
         val buttonriwayat = findViewById<Button>(R.id.btnriwayat)
         buttonriwayat.setOnClickListener {
@@ -141,10 +200,13 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        //total uang kotor
-
+        //shared preference
         sharepref = getSharedPreferences("uangkotor", Context.MODE_PRIVATE)
-        val shareprefvalue = sharepref.getString("uangkotor", "failed")
+        kembalianpref = getSharedPreferences("uangkembalian", Context.MODE_PRIVATE)
+
+
+
+        val shareprefvalue = sharepref.getString("uangkotor", "0")
 
         if(shareprefvalue?.isEmpty() == true || shareprefvalue == null){
             val editoruangkotor = sharepref.edit()
@@ -152,15 +214,16 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
+
+
         //button statistik
         val buttonstatistik = findViewById<Button>(R.id.btnstatistik)
         buttonstatistik.setOnClickListener {
-            val getuangkotor = sharepref.getString("uangkotor", "failed")
+            val getuangkotor = sharepref.getString("uangkotor", "0")
             val intent = Intent(this@MainActivity, statistik::class.java)
             intent.putExtra("uangkotor", getuangkotor)
             startActivity(intent)
-
-
 
         }
 
@@ -276,6 +339,7 @@ class MainActivity : AppCompatActivity() {
             builder.setPositiveButton("Selesaikan"){_,_ ->
                 //Toast.makeText(applicationContext, "Transaksi selesai", Toast.LENGTH_SHORT).show()
                 val builder = AlertDialog.Builder(this)
+                builder.setCancelable(false)
                 builder.setMessage("Print struk transaksi ini ?")
                 builder.setPositiveButton("Print"){_,_->
 
@@ -314,6 +378,10 @@ class MainActivity : AppCompatActivity() {
             builder.show()
 
         }
+
+
+
+
 
 
         //get data share preference
@@ -411,6 +479,51 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, permissions.toTypedArray(), PERMISSION_REQUEST_CODE)
         }
     }
+
+
+
+    fun showUangKembalianDialog(pesan: String) {
+        val buildkembalian = AlertDialog.Builder(this)
+        buildkembalian.setTitle("Uang Kembalian")
+        buildkembalian.setCancelable(false)
+        buildkembalian.setMessage(pesan)
+        buildkembalian.setPositiveButton("Ok") { dialog, _ ->
+
+            val buildlanjut = AlertDialog.Builder(this)
+            buildlanjut.setCancelable(false)
+            buildlanjut.setMessage("Selesaikan Transaksi ?")
+            buildlanjut.setPositiveButton("Ya"){_,_->
+                val buildprint = AlertDialog.Builder(this)
+                buildprint.setMessage("Cetak struk transaksi ini ?")
+                buildprint.setCancelable(false)
+                buildprint.setPositiveButton("Ya"){_,_->
+                    selesaikanTransaksi()
+                }
+                buildprint.setNegativeButton("Tidak"){dialog,_->
+                    selesaikanTransaksiTanpaCetakStruk()
+                }
+                buildprint.setNeutralButton("Batalkan"){dialog,_->
+                    dialog.dismiss()
+                }
+                buildprint.create()
+                buildprint.show()
+            }
+            buildlanjut.setNegativeButton("Tidak"){dialog,_->
+                dialog.dismiss()
+            }
+            buildlanjut.show()
+
+        }
+        buildkembalian.show()
+    }
+
+
+
+
+
+
+
+
 
     // Inflate menu to activity
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -847,7 +960,7 @@ class MainActivity : AppCompatActivity() {
 
 
         // totalkan pendapatan
-        val gettotaluangkotor = sharepref.getString("uangkotor", "default")
+        val gettotaluangkotor = sharepref.getString("uangkotor", "0")
         val totalpendapatan = gettotaluangkotor?.toInt()?.plus((totalHarga.toInt()))
 
 
@@ -971,7 +1084,7 @@ class MainActivity : AppCompatActivity() {
 
 
         // totalkan pendapatan
-        val gettotaluangkotor = sharepref.getString("uangkotor", "default")
+        val gettotaluangkotor = sharepref.getString("uangkotor", "0")
         val totalpendapatan = gettotaluangkotor?.toInt()?.plus((totalHarga.toInt()))
 
 

@@ -35,7 +35,39 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
+
+        <LinearLayout
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/btnkembalian"
+                android:layout_marginRight="5dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="Kembalian"
+                android:textSize="10sp"
+                android:padding="0dp"
+                android:src="@drawable/baseline_clean_hands_24"
+                android:background="@color/white"/>
+
+            <TextView
+                android:layout_marginTop="-13dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kembalian"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="10sp"/>
+
+
+        </LinearLayout>
+
         <TextView
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rp "
@@ -44,6 +76,7 @@
             android:textSize="30sp"/>
 
         <TextView
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:id="@+id/totalharga"
             android:layout_width="wrap_content"
