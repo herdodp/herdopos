@@ -13,6 +13,7 @@ import ScanResultAdapter
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
@@ -238,7 +239,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        // button statistik
+
         // button statistik
         val buttonstatistik = findViewById<Button>(R.id.btnstatistik)
         buttonstatistik.setOnClickListener {
@@ -418,7 +419,7 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(applicationContext, "Process print struk. . .", Toast.LENGTH_SHORT).show()
                             delay(500)
 
-                            selesaikanTransaksi()
+                            lakukanTransaksiDanCetakStruk()
 
                         }
 
@@ -554,7 +555,7 @@ class MainActivity : AppCompatActivity() {
         buildkembalian.setTitle("Uang Kembalian")
         buildkembalian.setCancelable(false)
         buildkembalian.setMessage(pesan)
-        buildkembalian.setPositiveButton("Ok") { dialog, _ ->
+        buildkembalian.setPositiveButton("Lanjutkan ?") { dialog, _ ->
 
             val buildlanjut = AlertDialog.Builder(this)
             buildlanjut.setCancelable(false)
@@ -564,7 +565,7 @@ class MainActivity : AppCompatActivity() {
                 buildprint.setMessage("Cetak struk transaksi ini ?")
                 buildprint.setCancelable(false)
                 buildprint.setPositiveButton("Ya"){_,_->
-                    selesaikanTransaksi()
+                    lakukanTransaksiDanCetakStruk()
                 }
                 buildprint.setNegativeButton("Tidak"){dialog,_->
                     selesaikanTransaksiTanpaCetakStruk()
@@ -575,7 +576,7 @@ class MainActivity : AppCompatActivity() {
                 buildprint.create()
                 buildprint.show()
             }
-            buildlanjut.setNegativeButton("Tidak"){dialog,_->
+            buildlanjut.setNegativeButton("Tutup"){dialog,_->
                 dialog.dismiss()
             }
             buildlanjut.show()
@@ -964,10 +965,101 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun parseStringToInt(value: String): Int {
+        return when {
+            value.contains("K") -> {
+                (value.replace("K", "").toDouble() * 1000).toInt()
+            }
+            value.contains("M") -> {
+                (value.replace("M", "").toDouble() * 1000000).toInt()
+            }
+            else -> {
+                value.toIntOrNull() ?: 0  // Menghindari NumberFormatException jika ada format yang salah
+            }
+        }
+    }
+
+
 
 
     @SuppressLint("MissingPermission")
     private fun selesaikanTransaksi() {
+
+
+        val buildertransaksi = AlertDialog.Builder(this)
+        buildertransaksi.setMessage("Ingin cetak struk ? ")
+        buildertransaksi.setCancelable(false)
+        buildertransaksi.setPositiveButton("Cetak"){_,_->
+            lakukanTransaksiDanCetakStruk()
+        }
+        buildertransaksi.setNegativeButton("Tidak"){_,_->
+            selesaikanTransaksiTanpaCetakStruk()
+        }
+        buildertransaksi.setNeutralButton("Batalkan"){dialog,_->
+            dialog.dismiss()
+        }
+
+
+    }
+
+
+
+
+    // Fungsi untuk melakukan transaksi dan mencetak struk
+
+    @SuppressLint("MissingPermission")
+    private fun lakukanTransaksiDanCetakStruk() {
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+
+        if (bluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth tidak tersedia pada perangkat ini", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (!bluetoothAdapter.isEnabled) {
+            // Bluetooth tidak aktif, minta pengguna untuk mengaktifkannya
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+            return
+        }
+
+        // Cek apakah perangkat Bluetooth sudah dipilih
+        val device = bluetoothDevice
+        if (device == null) {
+            // Jika perangkat Bluetooth belum dipilih, buka aktivitas untuk memilih perangkat
+            val pairedDevices = bluetoothAdapter.bondedDevices
+            if (pairedDevices.isNotEmpty()) {
+                // Tampilkan perangkat yang sudah dipairing
+                val devices = pairedDevices.map { it.name to it.address }.toMap()
+                // Tampilkan dialog atau aktivitas untuk memilih perangkat
+                showDeviceSelectionDialog(devices)
+            } else {
+                Toast.makeText(this, "Tidak ada perangkat Bluetooth yang dipairing", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        // Jika perangkat Bluetooth sudah dipilih, lanjutkan ke proses pencetakan struk
+        cetakStruk()
+    }
+
+    private fun showDeviceSelectionDialog(devices: Map<String, String>) {
+        val deviceNames = devices.keys.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle("Pilih Perangkat Bluetooth")
+            .setItems(deviceNames) { dialog, which ->
+                val selectedDeviceAddress = devices.values.toTypedArray()[which]
+                bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(selectedDeviceAddress)
+                Toast.makeText(this, "Perangkat Bluetooth dipilih: ${deviceNames[which]}", Toast.LENGTH_SHORT).show()
+
+                // Setelah memilih perangkat, lanjutkan proses pencetakan struk
+                lakukanTransaksiDanCetakStruk()
+            }
+            .show()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun cetakStruk() {
         // Buat format struk kasir dengan item dari RecyclerView
         val strukBuilder = StringBuilder()
 
@@ -985,14 +1077,23 @@ class MainActivity : AppCompatActivity() {
         strukBuilder.append("Item    Qty   Price   Total\n")
         strukBuilder.append("---------------------------\n")
 
+        var totalModal = 0
+
         // Tambahkan item ke struk
         for ((index, scanResult) in scanResults.withIndex()) {
-            hargapokok = scanResult.modal
-
-            val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
+            //val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
+            val harga1 = formatAngkaToK(scanResult.harga.toDouble())
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
+            val hargaaslipokok = parseStringToInt(hargaasli)
             val qty = if (index < listbarang.size) listbarang[index] else 0
 
+            // Harga pokok per item
+            //val qtyitem = scanResult.qty
+            val hargapokokPerItem = hargaaslipokok * qty
+
+            //Toast.makeText(applicationContext, "harga pokok : ${hargaaslipokok}, qty : ${qty}", Toast.LENGTH_SHORT).show()
+            val totalModalItem = hargapokokPerItem // Harga pokok per item bukan per qty
+            totalModal += totalModalItem
 
             val itemNama = scanResult.text.take(6).padEnd(8, ' ') // Panjang maksimal 6 karakter
             val qtyText = qty.toString().padEnd(5, ' ') // Panjang kolom Qty menjadi 5 karakter
@@ -1018,18 +1119,16 @@ class MainActivity : AppCompatActivity() {
 
         val strukutuh = strukBuilder.toString()
 
-
-        // totalkan pendapatan
+        // Totalkan pendapatan
         val gettotaluangkotor = sharepref.getString("uangkotor", "0")
-        val totalpendapatan = gettotaluangkotor?.toInt()?.plus((totalHarga.toInt()))
-
+        val totalpendapatan = gettotaluangkotor?.toInt()?.plus(totalHarga.toInt())
 
         val editoruangkotor = sharepref.edit()
         editoruangkotor.putString("uangkotor", totalpendapatan.toString())
         editoruangkotor.apply()
 
-
-        val lababersih = totalHarga - hargapokok
+        // Hitung laba bersih
+        val lababersih = totalHarga.toInt() - totalModal
         val editortotalpokok = lababersihpref.edit()
         editortotalpokok.putString("lababersih", lababersih.toString())
         editortotalpokok.apply()
@@ -1049,50 +1148,55 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, "Berhasil menyimpan data struk!", Toast.LENGTH_SHORT).show()
 
-        /*
-        val intent = Intent(this@MainActivity, riwayattransaksi::class.java)
-        intent.putExtra("nostruk", no_struk)
-        startActivity(intent)
-        finish()
-         */
+        // Cetak struk jika perangkat Bluetooth tersedia
+        val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val socket = bluetoothDevice?.createRfcommSocketToServiceRecord(uuid)
+                socket?.connect()
+                val outputStream: OutputStream = socket!!.outputStream
 
+                sendPrintData(outputStream, strukutuh)
 
-        Log.d("StrukKasir", strukutuh)
+                outputStream.close()
+                socket.close()
 
-        bluetoothDevice?.let { device ->
-            val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    val socket = device.createRfcommSocketToServiceRecord(uuid)
-                    socket.connect()
-                    val outputStream: OutputStream = socket.outputStream
-
-                    sendPrintData(outputStream, strukutuh)
-
-                    outputStream.close()
-                    socket.close()
-
-                    withContext(Dispatchers.Main) {
-                        lifecycleScope.launch {
-                            Toast.makeText(applicationContext, "Struk berhasil dicetak!", Toast.LENGTH_SHORT).show()
-                            delay(2000)
-                            startActivity(Intent(this@MainActivity, MainActivity::class.java))
-                            Toast.makeText(applicationContext, "Pilih perangkat bluetooth dulu sebelum menyelesaikan transaksi", Toast.LENGTH_SHORT).show()
-                            delay(1000)
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, "Gagal mencetak struk", Toast.LENGTH_SHORT).show()
-                    }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "Struk berhasil dicetak!", Toast.LENGTH_SHORT).show()
+                    delay(2000)
+                    startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Gagal mencetak struk", Toast.LENGTH_SHORT).show()
                 }
             }
-        } ?: run {
-            Toast.makeText(this, "Pilih perangkat Bluetooth terlebih dahulu", Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_ENABLE_BT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth telah diaktifkan, lanjutkan proses
+                    lakukanTransaksiDanCetakStruk()
+                } else {
+                    Toast.makeText(this, "Bluetooth tidak diaktifkan", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_ENABLE_BT = 1
+    }
+
+
+
+
+
 
 
 
@@ -1118,13 +1222,19 @@ class MainActivity : AppCompatActivity() {
         strukBuilder.append("Item    Qty   Price   Total\n")
         strukBuilder.append("---------------------------\n")
 
+        var totalModal = 0.0
+
         // Tambahkan item ke struk
         for ((index, scanResult) in scanResults.withIndex()) {
-            hargapokok = scanResult.modal
-
             val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
+            val hargaaslipokok =  parseStringToInt(hargaasli)
+
+            // Harga pokok per item
+            val hargapokokPerItem = scanResult.modal
+            val totalModalItem = hargaaslipokok * qty
+            totalModal += totalModalItem
 
             val itemNama = scanResult.text.take(6).padEnd(8, ' ') // Panjang maksimal 6 karakter
             val qtyText = qty.toString().padEnd(5, ' ') // Panjang kolom Qty menjadi 5 karakter
@@ -1150,18 +1260,16 @@ class MainActivity : AppCompatActivity() {
 
         val strukutuh = strukBuilder.toString()
 
-
-        // totalkan pendapatan
+        // Totalkan pendapatan
         val gettotaluangkotor = sharepref.getString("uangkotor", "0")
-        val totalpendapatan = gettotaluangkotor?.toInt()?.plus((totalHarga.toInt()))
-
+        val totalpendapatan = gettotaluangkotor?.toInt()?.plus(totalHarga.toInt())
 
         val editoruangkotor = sharepref.edit()
         editoruangkotor.putString("uangkotor", totalpendapatan.toString())
         editoruangkotor.apply()
 
-
-        val lababersih = totalHarga - hargapokok
+        // Hitung laba bersih
+        val lababersih = totalHarga - totalModal
         val editortotalpokok = lababersihpref.edit()
         editortotalpokok.putString("lababersih", lababersih.toString())
         editortotalpokok.apply()
@@ -1181,18 +1289,13 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, "Berhasil menyimpan data struk!", Toast.LENGTH_SHORT).show()
 
-
-        /*
-        val intent = Intent(this@MainActivity, riwayattransaksi::class.java)
-        intent.putExtra("nostruk", no_struk)
-        startActivity(intent)
-        finish()
-         */
-
-        startActivity(Intent(this@MainActivity,  MainActivity::class.java))
+        startActivity(Intent(this@MainActivity, MainActivity::class.java))
 
         Log.d("StrukKasir", strukutuh)
     }
+
+
+
 
 
 
