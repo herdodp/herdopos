@@ -143,7 +143,16 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        // Fungsi untuk menampilkan dialog input kembalian
+
+
+
+
+
+
+
+
+        // ================= open Fungsi untuk menampilkan dialog input kembalian ================
+
         fun showInputKembalianDialog() {
             // LayoutInflater untuk membuat view baru
             val inflatekembalian = LayoutInflater.from(this).inflate(R.layout.input_kembalian, null)
@@ -177,10 +186,23 @@ class MainActivity : AppCompatActivity() {
             builder.show()
         }
 
-        // Fungsi untuk menampilkan dialog uang kembalian
+        //================= close Fungsi untuk menampilkan dialog uang kembalian ==================
 
 
-// Menambahkan listener pada button kembalian
+
+
+
+
+
+
+
+
+
+
+
+
+        //================================ open button kembalian =================================
+
         val buttonkembalian = findViewById<ImageButton>(R.id.btnkembalian)
         buttonkembalian.setOnClickListener {
             if (totalHarga == null || totalHarga.toInt() == 0) {
@@ -193,19 +215,45 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //================================== close button kembalian ================================
 
 
 
 
-        // button riwayat
+
+
+
+
+
+
+
+
+
+
+
+        // ========================== open button riwayat =======================================
+
         val buttonriwayat = findViewById<Button>(R.id.btnriwayat)
         buttonriwayat.setOnClickListener {
             startActivity(Intent(this@MainActivity, riwayattransaksi::class.java))
         }
 
+        // ============================ close button riwayat ====================================
 
 
-        //shared preference
+
+
+
+
+
+
+
+
+
+
+
+        //================= open sharedpreference uang kembalian ===============================
+
         sharepref = getSharedPreferences("uangkotor", Context.MODE_PRIVATE)
         kembalianpref = getSharedPreferences("uangkembalian", Context.MODE_PRIVATE)
 
@@ -216,11 +264,10 @@ class MainActivity : AppCompatActivity() {
             editoruangkotor.putString("uangkotor", totaluangkotor.toString())
         }
 
-
-
         //laba bersih
         lababersihpref = getSharedPreferences("lababersih", Context.MODE_PRIVATE)
 
+        // ======================== close sharedpreferance uang kembalian =========================
 
 
 
@@ -230,7 +277,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        // button clear
 
 
 
@@ -240,7 +286,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        // button statistik
+        // =========================== open button statistik =====================================
+
         val buttonstatistik = findViewById<Button>(R.id.btnstatistik)
         buttonstatistik.setOnClickListener {
 
@@ -292,9 +339,28 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    // ================================== close button statistik ==================================
 
 
-        //button manual
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //=========================== open button manual =======================================
+
         val buttonmanual = findViewById<ImageButton>(R.id.addmanualitembtn)
         buttonmanual.setOnClickListener {
             val inflatebuild = LayoutInflater.from(this@MainActivity).inflate(R.layout.input_manual, null)
@@ -369,6 +435,18 @@ class MainActivity : AppCompatActivity() {
             builder.show()
         }
 
+        //================================== close button manual ==================================
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -389,7 +467,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        //button selesaikan transaksi
+
+
+
+        //=========================== open button selesaikan transaksi ===========================
+
         val btntransaksi = findViewById<Button>(R.id.btndonetransaction)
         btntransaksi.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -448,38 +530,70 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        //=========================== close button selesaikan transaksi ========================
 
 
 
 
-        //get data share preference
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //======================== open sharedpreference nama dan alamat toko ====================
         val prefs = getSharedPreferences("My_Prefs", Context.MODE_PRIVATE)
         val prefsalamat = getSharedPreferences("alamat", Context.MODE_PRIVATE)
 
         getnamatoko = prefs?.getString("keynamatoko", "default")
         getalamat = prefsalamat?.getString("keyalamat", "default")
+        //======================= close sharedpreferance nama dan alamat toko ==================
 
 
-        //
+
+
+
+
+
+
+
+        //============================ open init recyclerview ===================================
         recyclerView = findViewById(R.id.recyclerviewmain) // Pastikan ID ini sesuai dengan ID di layout XML Anda
         adapter = ScanResultAdapter(scanResults)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+        //=========================== close init recyclerview ===================================
 
 
 
-        //button clear input item
+
+
+
+
+
+
+        //=========================== open button clear input item ===============================
         buttonclearinput = findViewById(R.id.cleariteminputbtn)
         buttonclearinput.setOnClickListener {
             cleariteminput()
         }
+        //============================ close button clear input item ============================
 
 
 
 
 
 
-        // Barcode Scanner
+        //========================== open init Barcode Scanner ==================================
         barcodeView = findViewById(R.id.barcode_scanner)
         barcodeView.decodeContinuous(callback)
         barcodeView.setStatusText("")
@@ -489,27 +603,54 @@ class MainActivity : AppCompatActivity() {
         layoutParams.height = dpToPx(100) // Convert dp to px
         barcodeView.layoutParams = layoutParams
 
+        //=========================== close init barcode scanner ===============================
 
 
 
 
-        // Button to open Daftar Barang activity
+
+
+
+
+
+
+
+
+
+        //=============================== open tombol daftar barang ===========================
         val daftarbarang1 = findViewById<Button>(R.id.daftarbarang)
         daftarbarang1.setOnClickListener {
             startActivity(Intent(this, daftarbarang::class.java))
         }
+        //============================== close tombol daftar barang ===========================
 
 
 
 
 
 
-        // Toolbar setup
+
+
+
+
+
+
+
+        //============================== open Toolbar ==========================================
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = namatoko
+        //============================== close toolbar =========================================
 
-        // Initialize Bluetooth Adapter
+
+
+
+
+
+
+
+
+        //====================== open Initialize Bluetooth Adapter =============================
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter() ?: run {
             Toast.makeText(this, "Bluetooth is not supported on this device", Toast.LENGTH_LONG).show()
             return
@@ -522,8 +663,22 @@ class MainActivity : AppCompatActivity() {
 
         // Request Bluetooth permissions if needed
         checkAndRequestBluetoothPermissions()
+        //========================= close Initialize Bluetooth Adapter =============================
+
+
+
+
+
+
     }
 
+
+
+
+
+
+
+    //================================== open check permission bluetooth =========================
     private fun checkAndRequestBluetoothPermissions() {
         val permissions = mutableListOf<String>()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
@@ -547,9 +702,23 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, permissions.toTypedArray(), PERMISSION_REQUEST_CODE)
         }
     }
+    //=================================== close check permission bluetooth ========================
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    //========================= open func uang kembalian =========================================
     fun showUangKembalianDialog(pesan: String) {
         val buildkembalian = AlertDialog.Builder(this)
         buildkembalian.setTitle("Uang Kembalian")
@@ -584,6 +753,7 @@ class MainActivity : AppCompatActivity() {
         }
         buildkembalian.show()
     }
+    //============================ close func uang kembalian =====================================
 
 
 
@@ -593,7 +763,14 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // Inflate menu to activity
+
+
+
+
+
+
+
+    //=============================== open menu titik tiga toolbar ==============================
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
         return true
@@ -632,6 +809,24 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+    //========================= close menu titik tiga toolbar ====================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Menampilkan dialog daftar perangkat Bluetooth yang terpasang
     @SuppressLint("MissingPermission")
@@ -713,7 +908,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // Fungsi untuk mencetak struk kasir
+    //============================= open func tes cetak struk ====================================
     @SuppressLint("MissingPermission")
     private fun testPrintStruk() {
         bluetoothDevice?.let { device ->
@@ -739,16 +934,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Pilih perangkat Bluetooth terlebih dahulu", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
-
-
-
-
-
-
-
+    //================================== close tes cetak struk ==================================
 
 
 
@@ -787,20 +973,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-
     private val bluetoothRequestLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 showPairedDevices()
             }
         }
-
-
-
-
-
 
 
 
@@ -813,8 +991,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 
 
 
@@ -848,7 +1024,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // Barcode callback
+
+    //===============================  open BarcodeResult callback  ==============================
+
     private val callback = object : BarcodeCallback {
         @RequiresApi(Build.VERSION_CODES.R)
         override fun barcodeResult(result: BarcodeResult?) {
@@ -925,6 +1103,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //=========================== close barcodeResult callback ================================
+
+
+
+
+
 
 
 
@@ -956,6 +1140,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    //============================== open format 000 ke K ======================================
     fun formatAngkaToK(amount: Double): String {
         return if (amount >= 1000.00) {
             val formatted = (amount / 1000.00).toString() + "K"
@@ -964,7 +1149,16 @@ class MainActivity : AppCompatActivity() {
             amount.toString()
         }
     }
+    //============================ close format 000 ke K  =====================================
 
+
+
+
+
+
+
+
+    //============================= open format string to Int =================================
     fun parseStringToInt(value: String): Int {
         return when {
             value.contains("K") -> {
@@ -978,38 +1172,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    //============================== close format string to Int ===============================
 
 
+
+
+
+
+
+
+
+
+
+
+    //============================ open format string to double ===============================
     fun parseStringToDouble(value: String): Double {
         return value.toDoubleOrNull() ?: 0.0
     }
-
-
-
-
-
-    @SuppressLint("MissingPermission")
-    private fun selesaikanTransaksi() {
-
-
-        val buildertransaksi = AlertDialog.Builder(this)
-        buildertransaksi.setMessage("Ingin cetak struk ? ")
-        buildertransaksi.setCancelable(false)
-        buildertransaksi.setPositiveButton("Cetak"){_,_->
-            lakukanTransaksiDanCetakStruk()
-        }
-        buildertransaksi.setNegativeButton("Tidak"){_,_->
-            selesaikanTransaksiTanpaCetakStruk()
-        }
-        buildertransaksi.setNeutralButton("Batalkan"){dialog,_->
-            dialog.dismiss()
-        }
-
-
-    }
-
-
-
+    //=========================== close format string to double ===============================
 
 
 
@@ -1245,7 +1425,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-//======================================== open tanpa cetak struk  ===================================
+//=============================== open  transaksi tanpa cetak struk  ==============================
 
     private fun selesaikanTransaksiTanpaCetakStruk() {
         // Buat format struk kasir dengan item dari RecyclerView
@@ -1346,7 +1526,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-//===================================== close tanpa cetak struk  ===================================
+//================================ close transaksi tanpa cetak struk  =============================
 
 
 
@@ -1369,14 +1549,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
+    //============================= open random string struk =====================================
     private fun randomnostruk(): String {
         val alfanumerik = "0123456789abcdefghijklmnopqrstuvwxyz"
         return (1..10).map { alfanumerik.random() }.joinToString("")
     }
+    //============================ close random string struk ====================================
 
 
 
@@ -1393,11 +1571,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // Convert dp to px
+    //===================================== open Convert dp to px ================================
     private fun dpToPx(dp: Int): Int {
         val density = resources.displayMetrics.density
         return (dp * density).toInt()
     }
+    //==================================== close convert dp to px ===============================
 
 
 
@@ -1407,6 +1586,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
+//============================== open func clear input Mainactivity =============================
 
     private fun cleariteminput() {
         val hapusitem = AlertDialog.Builder(this)
@@ -1447,6 +1632,7 @@ class MainActivity : AppCompatActivity() {
         hapusitem.show()
     }
 
+    //========================= close func clear input mainactivity ==============================
 
 
 
@@ -1457,7 +1643,16 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    //mengganti format rupiah
+
+
+
+
+
+
+
+
+    //================================== open format =============================================
+
     fun formatRupiah(amount: Double): String {
         val formatRupiah = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
         val rupiah = formatRupiah.format(amount)
@@ -1481,6 +1676,7 @@ class MainActivity : AppCompatActivity() {
         return amount.replace("Rp ", "").replace(",", "").trim()
     }
 
+
     private fun parseToDouble(amount: String): Double {
         return try {
             removeRpPrefix(amount).toDouble()
@@ -1489,6 +1685,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //=================================== close format ===========================================
+
+
+
+
+    
 
 
 
@@ -1496,8 +1698,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
+    //============================== open tombol back ============================================
     @SuppressLint("MissingSuperCall")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
@@ -1513,6 +1714,10 @@ class MainActivity : AppCompatActivity() {
         builder.show()
         //super.onBackPressed()
     }
+    //============================== close tombol back ===========================================
+
+
+
 
 
 }
