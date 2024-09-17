@@ -27,5 +27,10 @@
         android:title="Tentang aplikasi"
         tools:ignore="HardcodedText" />
 
+    <item
+        android:id="@+id/versipro"
+        android:title="Versi PRO"
+        tools:ignore="HardcodedText"/>
+
 
 </menu>

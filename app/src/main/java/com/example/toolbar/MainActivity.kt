@@ -21,13 +21,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 //import android.net.wifi.ScanResult
 import android.os.Build
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -299,6 +305,7 @@ class MainActivity : AppCompatActivity() {
             val buttonclearreport = inflateviewreport.findViewById<Button>(R.id.clearreport)
             buttonclearreport.setOnClickListener {
 
+                //clear button
                 val clearbtn = AlertDialog.Builder(this)
                 clearbtn.setMessage("Bersihkan Pendapatan Kotor dan Laba Bersih ? ")
                 clearbtn.setPositiveButton("bersihkan"){_,_->
@@ -323,6 +330,43 @@ class MainActivity : AppCompatActivity() {
                 clearbtn.show()
 
             }
+
+            // button produk terlaris
+            val btnchart = inflateviewreport.findViewById<Button>(R.id.produkterlaris)
+            btnchart.setOnClickListener {
+                val build = AlertDialog.Builder(this@MainActivity)
+
+                // Pesan yang ingin ditampilkan di atas link
+                val pesan = "Fitur ini untuk versi PRO. Membelian versi pro silahkan klik link dibawah \n\n"
+
+                // Teks yang akan menjadi link
+                val spannableString = SpannableString("Beli versi PRO")
+                val clickableSpan = object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        // Ganti URL dengan link yang ingin Anda tambahkan
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://forms.gle/1eUgUBugqk3Sv2BC9"))
+                        startActivity(intent)
+                    }
+                }
+                spannableString.setSpan(clickableSpan, 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                // Membuat TextView untuk menampilkan pesan dan link
+                val messageTextView = TextView(this@MainActivity).apply {
+                    text = pesan + spannableString // Gabungkan pesan dengan link
+                    movementMethod = LinkMovementMethod.getInstance() // Mengaktifkan klik pada link
+                    textSize = 16f
+                    setPadding(50, 20, 50, 20) // Mengatur padding untuk teks
+                }
+
+                build.setCancelable(false)
+                build.setView(messageTextView) // Mengatur tampilan pesan dengan TextView yang sudah dibuat
+                build.setNeutralButton("Tutup") { dialog, _ ->
+                    dialog.dismiss() // Menutup dialog saat tombol "Tutup" ditekan
+                }
+                build.show()
+            }
+
+
 
 
             val getuangkotor = sharepref.getString("uangkotor", "0")
@@ -506,7 +550,6 @@ class MainActivity : AppCompatActivity() {
                         }
 
 
-
                 }
                 builder.setNegativeButton("Tidak"){dialog,_->
                     //startActivity(Intent(this@MainActivity, MainActivity::class.java))
@@ -528,7 +571,6 @@ class MainActivity : AppCompatActivity() {
             builder.show()
 
         }
-
 
         //=========================== close button selesaikan transaksi ========================
 
@@ -581,12 +623,21 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
         //=========================== open button clear input item ===============================
         buttonclearinput = findViewById(R.id.cleariteminputbtn)
         buttonclearinput.setOnClickListener {
             cleariteminput()
         }
         //============================ close button clear input item ============================
+
+
+
+
+
+
 
 
 
@@ -602,7 +653,6 @@ class MainActivity : AppCompatActivity() {
         layoutParams.width = dpToPx(180) // Convert dp to px
         layoutParams.height = dpToPx(100) // Convert dp to px
         barcodeView.layoutParams = layoutParams
-
         //=========================== close init barcode scanner ===============================
 
 
@@ -650,6 +700,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
         //====================== open Initialize Bluetooth Adapter =============================
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter() ?: run {
             Toast.makeText(this, "Bluetooth is not supported on this device", Toast.LENGTH_LONG).show()
@@ -676,7 +729,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        
+
 
 
 
@@ -824,6 +877,46 @@ class MainActivity : AppCompatActivity() {
 
             R.id.about -> {
                 startActivity(Intent(this@MainActivity, about::class.java))
+                true
+            }
+
+            R.id.versipro -> {
+
+
+                    val build = AlertDialog.Builder(this@MainActivity)
+
+                    // Pesan yang ingin ditampilkan di atas link
+                    val pesan = "Untuk pembelian versi PRO. Silahkan klik link dibawah\n\n"
+
+                    // Teks yang akan menjadi link
+                    val spannableString = SpannableString("Beli versi PRO")
+                    val clickableSpan = object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            // Ganti URL dengan link yang ingin Anda tambahkan
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://forms.gle/1eUgUBugqk3Sv2BC9"))
+                            startActivity(intent)
+                        }
+                    }
+                    spannableString.setSpan(clickableSpan, 0, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                    // Membuat TextView untuk menampilkan pesan dan link
+                    val messageTextView = TextView(this@MainActivity).apply {
+                        text = pesan // Tampilkan pesan
+                        append(spannableString) // Tambahkan link di bawah pesan
+                        movementMethod = LinkMovementMethod.getInstance() // Mengaktifkan klik pada link
+                        textSize = 16f
+                        setPadding(50, 20, 50, 20) // Mengatur padding untuk teks
+                    }
+
+                    build.setCancelable(false)
+                    build.setView(messageTextView) // Mengatur tampilan pesan dengan TextView yang sudah dibuat
+                    build.setNeutralButton("Tutup") { dialog, _ ->
+                        dialog.dismiss() // Menutup dialog saat tombol "Tutup" ditekan
+                    }
+                    build.show()
+
+
+
                 true
             }
             else -> super.onOptionsItemSelected(item)
