@@ -670,7 +670,27 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    }
+
+
+
+
+
+
+        
+
+
+
+    //===========================================================================================
+    //============================= BATAS ONCREATE DAN FUNCTION =================================
+    } //<<=======================================================================================
+    //============================= BATAS ONCREATE DAN FUNCTION =================================
+    //===========================================================================================
+
+
+
+
+
+
 
 
 
@@ -828,7 +848,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // Menampilkan dialog daftar perangkat Bluetooth yang terpasang
+    //===================== open Menampilkan dialog daftar perangkat ==============================
     @SuppressLint("MissingPermission")
     private fun showPairedDevices() {
         val pairedDevices: Set<BluetoothDevice> = bluetoothAdapter.bondedDevices
@@ -877,6 +897,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //========================== close menampilkan dialog daftar perangkat ====================
 
 
 
@@ -884,7 +905,14 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // Method to send data to the printer
+
+
+
+
+
+
+
+    //================================ open send data untuk print ================================
     private fun sendPrintData(outputStream: OutputStream, data: String) {
         try {
             outputStream.write(data.toByteArray())
@@ -895,6 +923,14 @@ class MainActivity : AppCompatActivity() {
             Log.e("Printer", "Error while sending data to printer: ${e.message}")
         }
     }
+    //=============================== close send data untuk print ==============================
+
+
+
+
+
+
+
 
 
 
@@ -909,6 +945,7 @@ class MainActivity : AppCompatActivity() {
 
 
     //============================= open func tes cetak struk ====================================
+
     @SuppressLint("MissingPermission")
     private fun testPrintStruk() {
         bluetoothDevice?.let { device ->
@@ -934,16 +971,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Pilih perangkat Bluetooth terlebih dahulu", Toast.LENGTH_SHORT).show()
         }
     }
-    //================================== close tes cetak struk ==================================
-
-
-
-
-
-
-
-
-
 
 
 
@@ -981,8 +1008,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-    // Handle runtime permission result
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -992,6 +1017,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //================================== close tes cetak struk ====================================
 
 
 
@@ -999,6 +1025,18 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+    //=================================== open onResume dan onPause ===============================
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
@@ -1008,6 +1046,8 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         barcodeView.pause()
     }
+    //================================ close onResume dan onPause =================================
+
 
 
 
@@ -1425,14 +1465,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
 //=============================== open  transaksi tanpa cetak struk  ==============================
 
     private fun selesaikanTransaksiTanpaCetakStruk() {
         // Buat format struk kasir dengan item dari RecyclerView
         val strukBuilder = StringBuilder()
 
-        val totalHargaText = formatRupiahnonrp(totalHarga)
-        val totalHargaDouble = parseToDouble(totalHargaText)
+        //val totalHargaText = formatRupiahnonrp(totalHarga)
+        //val totalHargaDouble = parseToDouble(totalHargaText)
 
         val databasehelper = DatabaseHelper(this@MainActivity)
         val no_struk = randomnostruk()
@@ -1457,7 +1500,7 @@ class MainActivity : AppCompatActivity() {
             val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
-            val hargaaslipokok =  parseStringToDouble(hargaasli)
+            //val hargaaslipokok =  parseStringToDouble(hargaasli)
 
             // Harga pokok per item
             //val hargapokokPerItem = scanResult.modal
@@ -1690,7 +1733,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    
+
 
 
 
