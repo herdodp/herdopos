@@ -11,7 +11,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "Kasir.db"
-        private const val DATABASE_VERSION = 15
+        private const val DATABASE_VERSION = 16
 
         // Table barang
         const val TABLE_NAME = "Barang"
@@ -20,6 +20,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_PRICE = "harga"
         const val COLUMN_BARCODE = "idbarcode"
         const val COLUMN_STOK = "stok"
+        const val COLUMN_POKOK = "harga_pokok"
+        const val COLUMN_TERJUAL = "terjual"
 
         // Table riwayat transaksi
         const val TABLE_RIWAYAT = "riwayat"
@@ -32,7 +34,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableBarang = ("CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "$COLUMN_NAME TEXT, $COLUMN_PRICE REAL, $COLUMN_BARCODE TEXT, $COLUMN_STOK INTEGER DEFAULT 0)")
+                + "$COLUMN_NAME TEXT, $COLUMN_PRICE REAL, $COLUMN_BARCODE TEXT, $COLUMN_STOK INTEGER DEFAULT 0, $COLUMN_POKOK INTEGER DEFAULT 0, $COLUMN_TERJUAL INTEGER DEFAULT 0)")
         db?.execSQL(createTableBarang)
 
         val createTableRiwayat = ("CREATE TABLE $TABLE_RIWAYAT ($COLUMN_ID_STRUK INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -50,13 +52,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     // ============================================== OPEN DATABASE BARANG ===========================================
 
     // Fungsi untuk menyimpan data ke dalam database barang
-    fun insertData(nama: String, harga: Double, idbarcode: String, stokbarang: Int): Long {
+    fun insertData(nama: String, harga: Double, idbarcode: String, stokbarang: Int, harga_pokok: Int): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
             put(COLUMN_NAME, nama)
             put(COLUMN_PRICE, harga)
             put(COLUMN_BARCODE, idbarcode)
             put(COLUMN_STOK, stokbarang)
+            put(COLUMN_POKOK, harga_pokok)
         }
         return db.insert(TABLE_NAME, null, contentValues)
     }
@@ -75,8 +78,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val harga = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE))
                 val idbarcode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BARCODE))
                 val stok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STOK))
+                val hargapokok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_POKOK))
 
-                val barang = Barang(id, nama, harga, idbarcode, stok)
+                val barang = Barang(id, nama, harga, idbarcode, stok, hargapokok)
                 barangList.add(barang)
             } while (cursor.moveToNext())
         }
@@ -84,11 +88,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return barangList
     }
 
+
+
     // Untuk menghapus data di database barang
     fun deleteData(id: Int): Int {
         val db = this.writableDatabase
         return db.delete(TABLE_NAME, "$COLUMN_ID = ?", arrayOf(id.toString()))
     }
+
+
 
     // Menghitung total jumlah data dalam database barang
     fun getTotalJumlahBarang(): Int {
@@ -103,13 +111,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return total
     }
 
+
+
     // Method to get Barang by barcode di database barang
     @SuppressLint("Range")
     fun getBarangByBarcode(barcode: String): Barang? {
         val db = this.readableDatabase
         val cursor = db.query(
             TABLE_NAME,
-            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK),
+            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK, COLUMN_POKOK),
             "$COLUMN_BARCODE = ?",
             arrayOf(barcode),
             null, null, null
@@ -121,13 +131,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val harga = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE))
             val barcode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BARCODE))
             val stok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STOK))
+            val hargapokok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_POKOK))
+
             cursor.close()
-            return Barang(id, nama, harga, barcode, stok)
+            return Barang(id, nama, harga, barcode, stok, hargapokok)
         }
 
         cursor.close()
         return null
     }
+
+
 
 
 
@@ -137,7 +151,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = this.readableDatabase
         val cursor = db.query(
             TABLE_NAME,
-            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK),
+            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_PRICE, COLUMN_BARCODE, COLUMN_STOK, COLUMN_POKOK),
             "$COLUMN_NAME = ?",
             arrayOf(namabarang),
             null, null, null
@@ -149,13 +163,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val harga = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE))
             val barcode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BARCODE))
             val stok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STOK))
+            val hargapokok = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_POKOK))
+
             cursor.close()
-            return Barang(id, nama, harga, barcode, stok)
+            return Barang(id, nama, harga, barcode, stok, hargapokok)
         }
 
         cursor.close()
         return null
     }
+
+
 
 
 
@@ -188,6 +206,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
 
 
+
+
     // Method untuk memperbarui stok
     fun updateStok(id: Int, tambahanStok: Int): Boolean {
         val db = this.writableDatabase
@@ -199,17 +219,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
 
-
-
-
-
-
-
+    
 
 
 
 
     // ============================================== CLOSE DATABASE BARANG =========================================
+
+
+
+
+
+
 
 
 

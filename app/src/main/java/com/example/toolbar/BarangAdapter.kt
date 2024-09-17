@@ -26,7 +26,8 @@ class BarangAdapter(
     inner class BarangViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val namaTextView: TextView = itemView.findViewById(R.id.textNama)
         val hargaTextView: TextView = itemView.findViewById(R.id.textHarga)
-        val idbarcodetextview: TextView = itemView.findViewById(R.id.idbarcode)
+        val hargaTextViewpokok: TextView = itemView.findViewById(R.id.textHargaPokok)
+        //val idbarcodetextview: TextView = itemView.findViewById(R.id.idbarcode)
         val jumlahstoktextview: TextView = itemView.findViewById(R.id.stokbarang)
         val btnHapus: Button = itemView.findViewById(R.id.btn_hapus)
         val btnbarcode: Button = itemView.findViewById(R.id.btn_barocde)
@@ -42,6 +43,7 @@ class BarangAdapter(
         val barang = barangList[position]
         holder.namaTextView.text = barang.nama
         holder.hargaTextView.text = formatRupiah(barang.harga)
+        holder.hargaTextViewpokok.text = formatRupiah(barang.hargapokok.toDouble())
         holder.jumlahstoktextview.text = barang.stokbarang.toString()
 
         holder.btnHapus.setOnClickListener {

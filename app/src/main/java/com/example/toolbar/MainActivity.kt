@@ -105,6 +105,9 @@ class MainActivity : AppCompatActivity() {
     //private lateinit var totalharga : TextView
 
     private var totalHarga = 0.0
+    private var modal : Int = 0
+    private var hargapokok : Int = 0
+
     private lateinit var totalHargaTextView: TextView
 
     private lateinit var databasehelper : DatabaseHelper
@@ -113,11 +116,12 @@ class MainActivity : AppCompatActivity() {
     private var listbarang: MutableList<Int> = mutableListOf()
 
     private var totaluangkotor : Int = 0
-    private var totaluangkembalian : Int = 0
+
 
 
     private lateinit var sharepref : SharedPreferences
     private lateinit var kembalianpref : SharedPreferences
+    private lateinit var lababersihpref : SharedPreferences
 
 
 
@@ -204,8 +208,6 @@ class MainActivity : AppCompatActivity() {
         sharepref = getSharedPreferences("uangkotor", Context.MODE_PRIVATE)
         kembalianpref = getSharedPreferences("uangkembalian", Context.MODE_PRIVATE)
 
-
-
         val shareprefvalue = sharepref.getString("uangkotor", "0")
 
         if(shareprefvalue?.isEmpty() == true || shareprefvalue == null){
@@ -215,17 +217,79 @@ class MainActivity : AppCompatActivity() {
 
 
 
+        //laba bersih
+        lababersihpref = getSharedPreferences("lababersih", Context.MODE_PRIVATE)
 
 
-        //button statistik
+
+
+
+
+
+
+
+
+        // button clear
+
+
+
+
+
+
+
+
+        // button statistik
+        // button statistik
         val buttonstatistik = findViewById<Button>(R.id.btnstatistik)
         buttonstatistik.setOnClickListener {
-            val getuangkotor = sharepref.getString("uangkotor", "0")
-            val intent = Intent(this@MainActivity, statistik::class.java)
-            intent.putExtra("uangkotor", getuangkotor)
-            startActivity(intent)
 
+            // Inflate the view each time the button is clicked to avoid reusing the same inflated view
+            val inflateviewreport = LayoutInflater.from(this).inflate(R.layout.view_report, null)
+            val pendapatankotorid = inflateviewreport.findViewById<TextView>(R.id.pendapatankotor)
+            val lababersihid = inflateviewreport.findViewById<TextView>(R.id.lababersih)
+
+            val buttonclearreport = inflateviewreport.findViewById<Button>(R.id.clearreport)
+            buttonclearreport.setOnClickListener {
+
+                val clearbtn = AlertDialog.Builder(this)
+                clearbtn.setMessage("Bersihkan Pendapatan Kotor dan Laba Bersih ? ")
+                clearbtn.setPositiveButton("bersihkan"){_,_->
+
+                    val editorincome = sharepref.edit()
+                    editorincome.putString("uangkotor", "0")
+                    editorincome.apply()
+
+                    val editorlaba = lababersihpref.edit()
+                    editorlaba.putString("lababersih", "0")
+                    editorlaba.apply()
+
+
+                    Toast.makeText(applicationContext, "Berhasil membersihkan pendapatan kotor dan laba bersih", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                    finish()
+
+                }
+                clearbtn.setNegativeButton("Cancel"){dialog,_->
+                    dialog.dismiss()
+                }
+                clearbtn.show()
+
+            }
+
+
+            val getuangkotor = sharepref.getString("uangkotor", "0")
+            pendapatankotorid.text = getuangkotor.toString()
+
+            val labarbersihview = lababersihpref.getString("lababersih", "0")
+            lababersihid.text = labarbersihview.toString()
+
+            val buildincome = AlertDialog.Builder(this@MainActivity)
+            buildincome.setTitle("Laporan Semua Transaksi")
+            buildincome.setView(inflateviewreport)
+            buildincome.setCancelable(true)
+            buildincome.show()
         }
+
 
 
 
@@ -258,6 +322,7 @@ class MainActivity : AppCompatActivity() {
 
                     if (barang != null) {
                         val stok = barang.stokbarang
+                        val hargapokok =  barang.hargapokok
                         if (stok >= getjumlahbarang) {
                             val itemTotalHarga = getjumlahbarang * gethargabarang
                             val count = getjumlahbarang
@@ -265,6 +330,7 @@ class MainActivity : AppCompatActivity() {
 
                             listbarang.add(getjumlahbarang)
                             totalHarga += itemTotalHarga
+                            modal += hargapokok
 
                             // Perbarui tampilan total harga
                             totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
@@ -274,7 +340,8 @@ class MainActivity : AppCompatActivity() {
                                     getnamabarang,
                                     count.toString(),
                                     hargaasli.toString(),
-                                    formatRupiah(itemTotalHarga.toDouble())
+                                    formatRupiah(itemTotalHarga.toDouble()),
+                                    modal
                                 )
                             )
 
@@ -785,96 +852,87 @@ class MainActivity : AppCompatActivity() {
         @RequiresApi(Build.VERSION_CODES.R)
         override fun barcodeResult(result: BarcodeResult?) {
             result?.let {
-                //Log.d("BarcodeResult", "Scanned QR Code: ${it.text}")
                 val scannedData = it.text
-                //Toast.makeText(this@MainActivity, "Scanned QR Code: $scannedData", Toast.LENGTH_LONG).show()
-
-                // Add scan result to list and update RecyclerView
-                //scanResults.add(ScanResult(scannedData))
-                //adapter.notifyDataSetChanged()
 
                 val databaseHelper = DatabaseHelper(this@MainActivity)
                 val barang = databaseHelper.getBarangByBarcode(scannedData)
 
                 if (barang != null) {
-                    // Update UI with the data, e.g., show in a TextView or RecyclerView
-                    //Toast.makeText(this@MainActivity, "Nama: ${barang.nama}, Harga: ${barang.harga}", Toast.LENGTH_LONG).show()
-
-
-                    //muncul alertdialog input jumlah barang yang dibeli
-
-                    //val count = 0
-
+                    // Membuka dialog input jumlah item
                     val inflateitemcount = LayoutInflater.from(this@MainActivity).inflate(R.layout.popup_countitem, null)
-
 
                     val builder = AlertDialog.Builder(this@MainActivity)
                     builder.setView(inflateitemcount)
                     builder.setTitle("Jumlah Item")
                     builder.setCancelable(false)
-                    builder.setPositiveButton("Ok"){_,_ ->
+                    builder.setPositiveButton("Ok") { _, _ ->
 
                         val itemcount = inflateitemcount.findViewById<EditText>(R.id.inputjumlah)
-                        val jumlahitemcount = itemcount.text.toString().toInt()
-                        val totalharga = jumlahitemcount*barang.harga
-                        val hargaasli = barang.harga
-                        val count = jumlahitemcount
+                        val jumlahItemText = itemcount.text.toString()
 
-                        listbarang.add(count)
+                        // Validasi apakah input kosong atau tidak valid
+                        if (jumlahItemText.isEmpty() || jumlahItemText.toIntOrNull() == null || jumlahItemText.toInt() <= 0) {
+                            val buildempty = AlertDialog.Builder(this@MainActivity)
+                            buildempty.setCancelable(true)
+                            buildempty.setMessage("Harap masukkan jumlah item yang valid")
+                            buildempty.show()
+                        } else {
+                            val jumlahitemcount = jumlahItemText.toInt()
 
+                            val totalharga = jumlahitemcount * barang.harga
+                            val hargaasli = barang.harga
+                            val hargapokok = barang.hargapokok
+                            val count = jumlahitemcount
 
-                        totalHarga += totalharga
+                            listbarang.add(count)
+                            totalHarga += totalharga
+                            modal += hargapokok
 
+                            // Perbarui tampilan total harga
+                            totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
-                        // Perbarui tampilan total harga
-                        totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
-
-                        scanResults.add(ScanResult(barang.nama, count.toString(),hargaasli.toString(),formatRupiahnonrp(totalharga)))
-
-                        adapter.notifyDataSetChanged()
-
-
+                            // Tambahkan hasil scan ke dalam scanResults dan update adapter
+                            scanResults.add(ScanResult(barang.nama, count.toString(), hargaasli.toString(), formatRupiahnonrp(totalharga), modal))
+                            adapter.notifyDataSetChanged()
+                        }
                     }
-                    builder.setNegativeButton("Cancel"){dialog,_->
+                    builder.setNegativeButton("Cancel") { dialog, _ ->
                         dialog.dismiss()
                     }
+
                     val dialog = builder.create()
                     dialog.setOnShowListener {
                         inflateitemcount.requestFocus()
 
-                        // Gunakan InputMethodManager untuk menampilkan keyboard
+                        // Menampilkan keyboard secara otomatis
                         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.showSoftInput(inflateitemcount, InputMethodManager.SHOW_IMPLICIT)
                     }
-                    //builder.create()
-                    builder.show()
-
-
-
-
-
-                    // Example: Add to RecyclerView
+                    dialog.show()
 
                 } else {
                     Toast.makeText(this@MainActivity, "Barang tidak ditemukan", Toast.LENGTH_LONG).show()
-
                 }
-
-                // Gunakan kelas ScanResult yang telah Anda buat
-                //val scanResult = com.example.toolbar.ScanResult(scannedData)
-                //scanResults.add(scanResult)
-                //adapter.notifyDataSetChanged()
 
                 // Stop scanning
                 barcodeView.pause()
-                // Optionally restart scanning after a delay
+
+                // Restart scanning after a delay (opsional)
                 barcodeView.postDelayed({
                     barcodeView.resume()
-                }, 1000) // Resume scanning after 1 second
+                }, 1000) // Mulai kembali scanning setelah 1 detik
             }
         }
 
-        override fun possibleResultPoints(resultPoints: List<ResultPoint>?) {
+
+
+
+
+
+
+
+
+    override fun possibleResultPoints(resultPoints: List<ResultPoint>?) {
             // Optionally handle result points
         }
     }
@@ -929,6 +987,8 @@ class MainActivity : AppCompatActivity() {
 
         // Tambahkan item ke struk
         for ((index, scanResult) in scanResults.withIndex()) {
+            hargapokok = scanResult.modal
+
             val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
@@ -967,6 +1027,12 @@ class MainActivity : AppCompatActivity() {
         val editoruangkotor = sharepref.edit()
         editoruangkotor.putString("uangkotor", totalpendapatan.toString())
         editoruangkotor.apply()
+
+
+        val lababersih = totalHarga - hargapokok
+        val editortotalpokok = lababersihpref.edit()
+        editortotalpokok.putString("lababersih", lababersih.toString())
+        editortotalpokok.apply()
 
         // Simpan data struk ke database
         val result = databasehelper.insertDatariwayat(
@@ -1054,6 +1120,8 @@ class MainActivity : AppCompatActivity() {
 
         // Tambahkan item ke struk
         for ((index, scanResult) in scanResults.withIndex()) {
+            hargapokok = scanResult.modal
+
             val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
@@ -1091,6 +1159,12 @@ class MainActivity : AppCompatActivity() {
         val editoruangkotor = sharepref.edit()
         editoruangkotor.putString("uangkotor", totalpendapatan.toString())
         editoruangkotor.apply()
+
+
+        val lababersih = totalHarga - hargapokok
+        val editortotalpokok = lababersihpref.edit()
+        editortotalpokok.putString("lababersih", lababersih.toString())
+        editortotalpokok.apply()
 
         // Simpan data struk ke database
         val result = databasehelper.insertDatariwayat(

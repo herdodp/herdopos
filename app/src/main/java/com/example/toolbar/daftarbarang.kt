@@ -58,19 +58,22 @@ class daftarbarang : AppCompatActivity() {
                 .setPositiveButton("Simpan") { _, _ ->
                     val editTextNama: EditText = viewdaftar.findViewById(R.id.namabarang)
                     val editTextHarga: EditText = viewdaftar.findViewById(R.id.hargabarang)
+                    val editTextHargapokok: EditText = viewdaftar.findViewById(R.id.hargabarangpokok)
                     val jumlahstok: EditText = viewdaftar.findViewById(R.id.stokbarang)
                     val idbarcode = idalfanumerik()
 
                     val nama = editTextNama.text.toString()
                     val hargaText = editTextHarga.text.toString()
+                    val hargaTextpokok = editTextHargapokok.text.toString()
                     val stokText = jumlahstok.text.toString()
 
-                    if (nama.isNotEmpty() && hargaText.isNotEmpty() && stokText.isNotEmpty()) {
+                    if (nama.isNotEmpty() && hargaText.isNotEmpty()  && hargaTextpokok.isNotEmpty() && stokText.isNotEmpty()) {
                         val harga = hargaText.toDoubleOrNull()
                         val barangstok = stokText.toIntOrNull()
+                        val hargapokok = hargaTextpokok.toInt()
 
                         if (harga != null && barangstok != null) {
-                            val result = databaseHelper.insertData(nama, harga, idbarcode, barangstok)
+                            val result = databaseHelper.insertData(nama, harga, idbarcode, barangstok, hargapokok)
                             if (result != -1L) {
                                 Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show()
                                 // Refresh data setelah penyimpanan
