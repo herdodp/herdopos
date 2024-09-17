@@ -89,6 +89,22 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
 
+    fun getHargaPokokById(name: String): Double {
+        val db = this.readableDatabase
+        val query = "SELECT $COLUMN_POKOK FROM $TABLE_NAME WHERE $COLUMN_NAME = ?"
+        val cursor = db.rawQuery(query, arrayOf(name))
+        var hargaPokok = 0.0
+
+        if (cursor.moveToFirst()) {
+            hargaPokok = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_POKOK))
+        }
+        cursor.close()
+        return hargaPokok
+    }
+
+
+
+
 
     // Untuk menghapus data di database barang
     fun deleteData(id: Int): Int {

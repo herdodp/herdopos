@@ -5,5 +5,5 @@ data class ScanResult(
     val qty: String,
     val hargaasli: String,
     val harga: String,
-    val modal: Int
+    val hargapokok: Int
 )

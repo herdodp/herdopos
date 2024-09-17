@@ -980,6 +980,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun parseStringToDouble(value: String): Double {
+        return value.toDoubleOrNull() ?: 0.0
+    }
+
+
+
 
 
     @SuppressLint("MissingPermission")
@@ -1005,7 +1011,25 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // Fungsi untuk melakukan transaksi dan mencetak struk
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ================================ open selesaikan transaksi ==============================
 
     @SuppressLint("MissingPermission")
     private fun lakukanTransaksiDanCetakStruk() {
@@ -1077,19 +1101,24 @@ class MainActivity : AppCompatActivity() {
         strukBuilder.append("Item    Qty   Price   Total\n")
         strukBuilder.append("---------------------------\n")
 
-        var totalModal = 0
+        var totalModal = 0.0
 
         // Tambahkan item ke struk
         for ((index, scanResult) in scanResults.withIndex()) {
+
+            val hargaPokokPerItem = databasehelper.getHargaPokokById(scanResult.text)
+
+
             //val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
             val harga1 = formatAngkaToK(scanResult.harga.toDouble())
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val hargaaslipokok = parseStringToInt(hargaasli)
+
             val qty = if (index < listbarang.size) listbarang[index] else 0
 
             // Harga pokok per item
             //val qtyitem = scanResult.qty
-            val hargapokokPerItem = hargaaslipokok * qty
+            val hargapokokPerItem = hargaPokokPerItem * qty
 
             //Toast.makeText(applicationContext, "harga pokok : ${hargaaslipokok}, qty : ${qty}", Toast.LENGTH_SHORT).show()
             val totalModalItem = hargapokokPerItem // Harga pokok per item bukan per qty
@@ -1121,18 +1150,20 @@ class MainActivity : AppCompatActivity() {
 
         // Totalkan pendapatan
         val gettotaluangkotor = sharepref.getString("uangkotor", "0")
-        val totalpendapatan = gettotaluangkotor?.toInt()?.plus(totalHarga.toInt())
+        val totalpendapatan = gettotaluangkotor?.toDouble()?.plus(totalHarga)
 
         val editoruangkotor = sharepref.edit()
         editoruangkotor.putString("uangkotor", totalpendapatan.toString())
         editoruangkotor.apply()
 
         // Hitung laba bersih
-        val lababersih = totalHarga.toInt() - totalModal
-        val editortotalpokok = lababersihpref.edit()
-        editortotalpokok.putString("lababersih", lababersih.toString())
-        editortotalpokok.apply()
+        val getlababersih = lababersihpref.getString("lababersih", "0")
+        val lababersih = totalHarga - totalModal
+        val labafinal = getlababersih?.toDouble()?.plus(lababersih)
 
+        val editortotalpokok = lababersihpref.edit()
+        editortotalpokok.putString("lababersih", labafinal.toString())
+        editortotalpokok.apply()
         // Simpan data struk ke database
         val result = databasehelper.insertDatariwayat(
             stringstruk = strukutuh,
@@ -1193,6 +1224,7 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_ENABLE_BT = 1
     }
 
+    // ================================ close selesaikan transaksi =================================
 
 
 
@@ -1203,6 +1235,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+//======================================== open tanpa cetak struk  ===================================
 
     private fun selesaikanTransaksiTanpaCetakStruk() {
         // Buat format struk kasir dengan item dari RecyclerView
@@ -1226,14 +1269,19 @@ class MainActivity : AppCompatActivity() {
 
         // Tambahkan item ke struk
         for ((index, scanResult) in scanResults.withIndex()) {
+
+
+            val hargaPokokPerItem = databasehelper.getHargaPokokById(scanResult.text)
+
+
             val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
             val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
-            val hargaaslipokok =  parseStringToInt(hargaasli)
+            val hargaaslipokok =  parseStringToDouble(hargaasli)
 
             // Harga pokok per item
-            val hargapokokPerItem = scanResult.modal
-            val totalModalItem = hargaaslipokok * qty
+            //val hargapokokPerItem = scanResult.modal
+            val totalModalItem = hargaPokokPerItem * qty
             totalModal += totalModalItem
 
             val itemNama = scanResult.text.take(6).padEnd(8, ' ') // Panjang maksimal 6 karakter
@@ -1262,16 +1310,19 @@ class MainActivity : AppCompatActivity() {
 
         // Totalkan pendapatan
         val gettotaluangkotor = sharepref.getString("uangkotor", "0")
-        val totalpendapatan = gettotaluangkotor?.toInt()?.plus(totalHarga.toInt())
+        val totalpendapatan = gettotaluangkotor?.toDouble()?.plus(totalHarga)
 
         val editoruangkotor = sharepref.edit()
         editoruangkotor.putString("uangkotor", totalpendapatan.toString())
         editoruangkotor.apply()
 
         // Hitung laba bersih
+        val getlababersih = lababersihpref.getString("lababersih", "0")
         val lababersih = totalHarga - totalModal
+        val labafinal = getlababersih?.toDouble()?.plus(lababersih)
+
         val editortotalpokok = lababersihpref.edit()
-        editortotalpokok.putString("lababersih", lababersih.toString())
+        editortotalpokok.putString("lababersih", labafinal.toString())
         editortotalpokok.apply()
 
         // Simpan data struk ke database
@@ -1293,6 +1344,20 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("StrukKasir", strukutuh)
     }
+
+
+//===================================== close tanpa cetak struk  ===================================
+
+
+
+
+
+
+
+
+
+
+
 
 
 
