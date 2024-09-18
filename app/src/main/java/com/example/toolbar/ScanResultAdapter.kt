@@ -30,9 +30,9 @@ class ScanResultAdapter(private val scanResults: List<com.example.toolbar.ScanRe
         fun bind(scanResult: com.example.toolbar.ScanResult) {
             // Gunakan informasi dari ScanResult yang relevan
             textScanResult.text = scanResult.text
-            qtyScanResult.text = scanResult.qty
-            hargaasliScanResult.text = scanResult.hargaasli
-            hargaScanResult.text = scanResult.harga
+            qtyScanResult.text = scanResult.qty.toString()
+            hargaasliScanResult.text = scanResult.hargaasli.toString()
+            hargaScanResult.text = scanResult.harga.toString()
         }
     }
 }

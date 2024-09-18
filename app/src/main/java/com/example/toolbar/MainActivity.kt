@@ -454,9 +454,9 @@ class MainActivity : AppCompatActivity() {
                             scanResults.add(
                                 ScanResult(
                                     getnamabarang,
-                                    count.toString(),
-                                    hargaasli.toString(),
-                                    formatRupiah(itemTotalHarga.toDouble()),
+                                    count,
+                                    hargaasli.toInt(),
+                                    itemTotalHarga,
                                     modal
                                 )
                             )
@@ -743,6 +743,7 @@ class MainActivity : AppCompatActivity() {
     } //<<=======================================================================================
     //============================= BATAS ONCREATE DAN FUNCTION =================================
     //===========================================================================================
+
 
 
 
@@ -1209,7 +1210,7 @@ class MainActivity : AppCompatActivity() {
                             totalHargaTextView.text = "${formatRupiahnonrp(totalHarga)}"
 
                             // Tambahkan hasil scan ke dalam scanResults dan update adapter
-                            scanResults.add(ScanResult(barang.nama, count.toString(), hargaasli.toString(), formatRupiahnonrp(totalharga), modal))
+                            scanResults.add(ScanResult(barang.nama, count, hargaasli.toInt(), totalharga.toInt(), modal))
                             adapter.notifyDataSetChanged()
                         }
                     }
@@ -1279,14 +1280,30 @@ class MainActivity : AppCompatActivity() {
 
 
     //============================== open format 000 ke K ======================================
-    fun formatAngkaToK(amount: Double): String {
-        return if (amount >= 1000.00) {
-            val formatted = (amount / 1000.00).toString() + "K"
-            formatted
-        } else {
-            amount.toString()
+    fun formatAngkaToK(amount: Int): String {
+        return when {
+            amount >= 1_000_000 -> {
+                val formatted = if (amount % 1_000_000 == 0) {
+                    (amount / 1_000_000).toString() + " jt"
+                } else {
+                    String.format("%.1f", amount / 1_000_000.0) + " jt"
+                }
+                formatted
+            }
+            amount >= 1_000 -> {
+                val formatted = if (amount % 1_000 == 0) {
+                    (amount / 1_000).toString() + "K"
+                } else {
+                    String.format("%.1f", amount / 1_000.0) + "K"
+                }
+                formatted
+            }
+            else -> {
+                amount.toString()
+            }
         }
     }
+
     //============================ close format 000 ke K  =====================================
 
 
@@ -1428,8 +1445,8 @@ class MainActivity : AppCompatActivity() {
 
 
             //val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
-            val harga1 = formatAngkaToK(scanResult.harga.toDouble())
-            val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
+            val harga1 = formatAngkaToK(scanResult.harga.toInt())
+            val hargaasli = formatAngkaToK(scanResult.hargaasli.toInt()) // Menggunakan fungsi formatAngkaToK
             val hargaaslipokok = parseStringToInt(hargaasli)
 
             val qty = if (index < listbarang.size) listbarang[index] else 0
@@ -1458,7 +1475,7 @@ class MainActivity : AppCompatActivity() {
 
         // Tambahkan informasi total dan waktu ke struk
         strukBuilder.append("---------------------------\n")
-        strukBuilder.append("Total               ${formatAngkaToK(totalHarga)}\n") // Menggunakan fungsi formatAngkaToK
+        strukBuilder.append("Total               ${formatAngkaToK(totalHarga.toInt())}\n") // Menggunakan fungsi formatAngkaToK
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("${Timenow}\n")
         strukBuilder.append("${Datenow}\n")
@@ -1595,8 +1612,8 @@ class MainActivity : AppCompatActivity() {
             val hargaPokokPerItem = databasehelper.getHargaPokokById(scanResult.text)
 
 
-            val harga1 = formatAngkaToK(scanResult.harga.toDouble()) // Menggunakan fungsi formatAngkaToK
-            val hargaasli = formatAngkaToK(scanResult.hargaasli.toDouble()) // Menggunakan fungsi formatAngkaToK
+            val harga1 = formatAngkaToK(scanResult.harga.toInt()) // Menggunakan fungsi formatAngkaToK
+            val hargaasli = formatAngkaToK(scanResult.hargaasli.toInt()) // Menggunakan fungsi formatAngkaToK
             val qty = if (index < listbarang.size) listbarang[index] else 0
             //val hargaaslipokok =  parseStringToDouble(hargaasli)
 
@@ -1621,7 +1638,7 @@ class MainActivity : AppCompatActivity() {
 
         // Tambahkan informasi total dan waktu ke struk
         strukBuilder.append("---------------------------\n")
-        strukBuilder.append("Total               ${formatAngkaToK(totalHarga)}\n") // Menggunakan fungsi formatAngkaToK
+        strukBuilder.append("Total               ${formatAngkaToK(totalHarga.toInt())}\n") // Menggunakan fungsi formatAngkaToK
         strukBuilder.append("---------------------------\n")
         strukBuilder.append("${Timenow}\n")
         strukBuilder.append("${Datenow}\n")
