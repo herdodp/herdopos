@@ -233,7 +233,7 @@
             android:id="@+id/btnstatistik"
             android:layout_width="100dp"
             android:layout_height="35dp"
-            android:text="Report"
+            android:text="Laporan"
             android:background="@drawable/round_button"
             android:textColor="@color/white"
             android:textSize="10sp"

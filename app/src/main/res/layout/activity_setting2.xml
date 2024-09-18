@@ -192,7 +192,7 @@
                            android:id="@+id/teksaktivasi"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text=""
+                           android:text="non PRO"
                            android:textColor="@color/black"
                            android:textSize="20dp"
                            android:layout_margin="10dp"/>

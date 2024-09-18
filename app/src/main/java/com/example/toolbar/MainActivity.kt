@@ -334,10 +334,11 @@ class MainActivity : AppCompatActivity() {
             // button produk terlaris
             val btnchart = inflateviewreport.findViewById<Button>(R.id.produkterlaris)
             btnchart.setOnClickListener {
+
                 val build = AlertDialog.Builder(this@MainActivity)
 
                 // Pesan yang ingin ditampilkan di atas link
-                val pesan = "Fitur ini untuk versi PRO. Membelian versi pro silahkan klik link dibawah \n\n"
+                val pesan = "Fitur ini tersedia pada versi PRO. Untuk pembelian versi PRO. Silahkan klik link dibawah\n\n"
 
                 // Teks yang akan menjadi link
                 val spannableString = SpannableString("Beli versi PRO")
@@ -352,7 +353,8 @@ class MainActivity : AppCompatActivity() {
 
                 // Membuat TextView untuk menampilkan pesan dan link
                 val messageTextView = TextView(this@MainActivity).apply {
-                    text = pesan + spannableString // Gabungkan pesan dengan link
+                    text = pesan // Tampilkan pesan
+                    append(spannableString) // Tambahkan link di bawah pesan
                     movementMethod = LinkMovementMethod.getInstance() // Mengaktifkan klik pada link
                     textSize = 16f
                     setPadding(50, 20, 50, 20) // Mengatur padding untuk teks
@@ -379,6 +381,9 @@ class MainActivity : AppCompatActivity() {
             buildincome.setTitle("Laporan Semua Transaksi")
             buildincome.setView(inflateviewreport)
             buildincome.setCancelable(true)
+            buildincome.setNeutralButton("Tutup"){dialog,_->
+                dialog.dismiss()
+            }
             buildincome.show()
         }
 
